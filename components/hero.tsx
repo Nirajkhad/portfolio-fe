@@ -120,7 +120,7 @@ export function Hero() {
             }}
             className={`font-mono text-[11px] px-3.5 py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[7px] cursor-pointer border border-[#27272a]/50 text-[#52525b] hover:text-[#4ade80] hover:border-[#4ade80]`}
           >
-            <i className={`${btn. text-[12px]`} />
+            <i className={`${btn.iconClass} text-[12px]`} />
             <span>{btn.label}</span>
           </button>
         ))}
