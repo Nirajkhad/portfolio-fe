@@ -7,8 +7,8 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans'
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  title: 'Niraj | Backend Software Engineer',
-  description: '4+ years building scalable APIs, microservices, and event-driven systems.',
+  title: 'Niraj Khadka Portfolio',
+  description: 'Love Building things, learning new technologies, and sharing knowledge. This is my personal portfolio showcasing my projects, experience, and writing.',
   generator: 'v0.app',
   icons: {
     icon: [
