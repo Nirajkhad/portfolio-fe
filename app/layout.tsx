@@ -36,6 +36,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${firaCode.variable} bg-[#09090b]`}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
+          integrity="sha512-9usAa3IW2lEnf3lGY6i7eogTQOO/wr4yx5+2ddG28xo7J6O4/C9QlYeoCsDSaV88TeY6pC68f0uC7m7SVV0aBA=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />
+      </head>
       <body suppressHydrationWarning className="font-sans antialiased bg-[#09090b] text-[#fafafa]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

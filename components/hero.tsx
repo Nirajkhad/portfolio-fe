@@ -6,8 +6,7 @@ import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api'
 interface CtaButton {
   label: string;
   href: string;
-  icon: string;
-  variant: 'ghost' | 'primary';
+  iconClass: string;
   isExternal: boolean;
 }
 
@@ -65,39 +64,15 @@ export function Hero() {
     );
   }
 
-  const { full_name, title, bio, email, location, social_links } = state.data;
+  const { full_name, title, bio, location, social_links } = state.data;
 
-  // Build CTA buttons from social links and email
-  const ctaButtons: CtaButton[] = [];
-
-  // Add social links as buttons
-  social_links.forEach((link) => {
-    const platformIcons: Record<string, string> = {
-      'GitHub': '⌥',
-      'LinkedIn': '⌥',
-      'Twitter': '𝕏',
-      'default': '→',
-    };
-    
-    ctaButtons.push({
-      label: link.platform,
-      href: link.url,
-      icon: platformIcons[link.platform] || platformIcons['default'],
-      variant: 'ghost',
-      isExternal: true,
-    });
-  });
-
-  // Add email button
-  if (email) {
-    ctaButtons.push({
-      label: email,
-      href: `mailto:${email}`,
-      icon: '✉',
-      variant: 'ghost',
-      isExternal: false,
-    });
-  }
+  // Build CTA buttons from social links - use icon class from API directly
+  const ctaButtons = social_links.map((link) => ({
+    label: link.platform,
+    href: link.url,
+    iconClass: link.icon,
+    isExternal: true,
+  }));
 
   return (
     <section id="home" className="pt-[52px] px-10">
@@ -118,7 +93,7 @@ export function Hero() {
       </h1>
 
       {/* Role */}
-      <p className="font-mono text-lg text-[#3f3f46] mt-2 mb-5">// {title}</p>
+      <p className="font-mono text-lg text-[#3f3f46] mt-2 mb-5">{`// ${title}`}</p>
 
       {/* Bio */}
       <p className="text-sm text-[#71717a] leading-[1.8] mb-5 max-w-[500px]">
@@ -133,23 +108,19 @@ export function Hero() {
 
       {/* CTA Buttons */}
       <div className="flex gap-3 flex-wrap">
-        {ctaButtons.map((btn, idx) => (
+        {ctaButtons.map((btn) => (
           <button
-            key={idx}
+            key={btn.label}
             onClick={() => {
               if (btn.isExternal) {
-                window.open(btn.href, '_blank', 'noopener,noreferrer');
+                globalThis.window?.open(btn.href, '_blank', 'noopener,noreferrer');
               } else {
-                window.location.href = btn.href;
+                globalThis.window.location.href = btn.href;
               }
             }}
-            className={`font-mono text-[11px] px-3.5 py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[7px] cursor-pointer ${
-              btn.variant === 'primary'
-                ? 'bg-[#4ade80] text-[#09090b] font-semibold hover:bg-[#22c55e]'
-                : 'border border-[#27272a]/50 text-[#52525b] hover:text-[#4ade80] hover:border-[#4ade80]'
-            }`}
+            className={`font-mono text-[11px] px-3.5 py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[7px] cursor-pointer border border-[#27272a]/50 text-[#52525b] hover:text-[#4ade80] hover:border-[#4ade80]`}
           >
-            <span>{btn.icon}</span>
+            <i className={`${btn.iconClass} text-[12px]`} />
             <span>{btn.label}</span>
           </button>
         ))}
