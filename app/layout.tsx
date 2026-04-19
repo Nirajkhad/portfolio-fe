@@ -39,8 +39,8 @@ export default function RootLayout({
       <head>
         <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
-          integrity="sha512-9usAa3IW2lEnf3lGY6i7eogTQOO/wr4yx5+2ddG28xo7J6O4/C9QlYeoCsDSaV88TeY6pC68f0uC7m7SVV0aBA=="
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
