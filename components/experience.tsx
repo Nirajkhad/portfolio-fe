@@ -14,7 +14,6 @@ export function Experience() {
       try {
         setLoading(true);
         const data = await fetchExperiences();
-        console.log("DATA", data);
         setExperiences(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load experiences');

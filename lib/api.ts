@@ -128,7 +128,6 @@ async function fetchApi<T>(endpoint: string): Promise<T> {
       throw new Error('API returned success: false');
     }
 
-    console.log(`Fetched ${endpoint}:`, result.data);
     return result.data;
   } catch (error) {
     console.error(`Failed to fetch ${endpoint}:`, error);
