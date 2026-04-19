@@ -58,7 +58,7 @@ export interface Experience {
 export interface ProjectTechStack {
   id: string;
   project_id: string;
-  technology: string;
+  name: string;
   sort_order: number;
   created_at: string;
   updated_at: string;

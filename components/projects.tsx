@@ -76,7 +76,7 @@ export function Projects() {
                   key={tech.id}
                   className="font-mono text-[9px] text-[#3f3f46] bg-[#18181b] px-[7px] py-[3px] rounded"
                 >
-                  {tech.technology}
+                  {tech.name}
                 </span>
               ))}
             </div>
@@ -122,7 +122,7 @@ export function Projects() {
                   key={tech.id}
                   className="font-mono text-[9px] text-[#3f3f46] bg-[#18181b] px-[7px] py-[3px] rounded"
                 >
-                  {tech.technology}
+                  {tech.name}
                 </span>
               ))}
             </div>
