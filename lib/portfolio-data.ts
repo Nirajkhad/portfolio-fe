@@ -245,7 +245,7 @@ export const contactData: ContactData = {
   title: "Let's build something together",
   subtitle: "Open to new roles, freelance projects, or just a chat about backend architecture. My inbox is always open.",
   ctaLabel: "Say hello",
-  ctaHref: "mailto:niraj@email.com",
+  ctaHref: "mailto:khadka.niraj11111@gmail.com",
   socials: [
     { label: "GitHub", href: "https://github.com" },
     { label: "LinkedIn", href: "https://linkedin.com" },
@@ -254,7 +254,7 @@ export const contactData: ContactData = {
 };
 
 export const footerData: FooterData = {
-  text: "built with Laravel + Next.js",
-  domain: "niraj.com.np",
-  year: "2025",
+  text: "Built with Laravel Filament(CMS) + Next.js",
+  domain: "niraj-khadka.com.np",
+  year: new Date().getFullYear().toString(),
 };
