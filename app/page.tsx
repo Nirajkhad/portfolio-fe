@@ -13,33 +13,32 @@ import { BackToTop } from '@/components/back-to-top';
 
 export default function Home() {
   useEffect(() => {
-    // Handle hash navigation after content loads
-    const scrollToHash = (immediate = false) => {
+    window.history.scrollRestoration = 'manual';
+    
+    const scrollToHash = () => {
       const hash = window.location.hash;
-      if (hash) {
-        // Wait for content to load based on whether it's immediate or initial load
-        const delay = immediate ? 100 : 800;
-        
-        setTimeout(() => {
-          const element = document.querySelector(hash);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, delay);
+      if (!hash) return;
+
+      const element = document.querySelector(hash);
+      if (element) {
+        // Use smooth scroll for better UX
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     };
 
-    // Handle initial load
-    scrollToHash(false);
+    // Wait for content to load on initial page load
+    const initialTimeout = setTimeout(scrollToHash, 800);
 
-    // Handle hash changes (e.g., clicking links)
+    // Handle hash changes (clicking links within the page)
     const handleHashChange = () => {
-      scrollToHash(true);
+      // Small delay to let content settle, then smooth scroll
+      setTimeout(scrollToHash, 100);
     };
 
     window.addEventListener('hashchange', handleHashChange);
     
     return () => {
+      clearTimeout(initialTimeout);
       window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
