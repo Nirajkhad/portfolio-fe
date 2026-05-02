@@ -36,6 +36,18 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        {/* SEO Meta Tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Niraj Khadka Portfolio" />
+        <meta property="og:description" content="Love Building things, learning new technologies, and sharing knowledge. This is my personal portfolio showcasing my projects, experience, and writing." />
+        <meta property="og:url" content="https://nirajkhadka.com/" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Niraj Khadka Portfolio" />
+        <meta name="twitter:description" content="Love Building things, learning new technologies, and sharing knowledge. This is my personal portfolio showcasing my projects, experience, and writing." />
+        <meta name="twitter:image" content="/og-image.png" />
       </head>
       <body suppressHydrationWarning className="font-sans antialiased bg-[#09090b] text-[#fafafa]">
         {children}

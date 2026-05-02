@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchSkillsGrouped, type SkillCategory } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import { EmptySection } from './empty-section';
 
 const colorMap: Record<string, string> = {
   'Languages': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
@@ -34,32 +35,33 @@ export function Skills() {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
 
-  return (
-    <section id="skills" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
-      <SectionHeader title="skills" />
-
-      {loading ? (
-        <div className="animate-pulse flex flex-col gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 bg-[#18181b] border border-[#27272a] rounded-xl" />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="text-red-500 text-sm">Error: {error}</div>
-      ) : (
-        <div 
-          className="flex flex-col gap-4"
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
-            transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            willChange: 'opacity, transform'
-          }}
-        >
+  let content;
+  if (loading) {
+    content = (
+      <div className="animate-pulse flex flex-col gap-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-24 bg-[#18181b] border border-[#27272a] rounded-xl" />
+        ))}
+      </div>
+    );
+  } else if (error) {
+    content = <div className="text-red-500 text-sm">Error: {error}</div>;
+  } else if (!skillCategories || skillCategories.length === 0) {
+    content = <EmptySection message="No skills to show yet." />;
+  } else {
+    content = (
+      <div
+        className="flex flex-col gap-4"
+        style={{
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
+          transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          willChange: 'opacity, transform'
+        }}
+      >
         {skillCategories.map((category) => (
           <div
             key={category.category}
@@ -68,7 +70,6 @@ export function Skills() {
             <div className="font-mono text-xs sm:text-sm font-medium text-[#f9fafb] mb-3">
               {category.category}
             </div>
-
             <div className="flex flex-wrap gap-2">
               {category.skills.map((skill) => (
                 <span
@@ -81,8 +82,14 @@ export function Skills() {
             </div>
           </div>
         ))}
-        </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <section id="skills" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
+      <SectionHeader title="skills" />
+      {content}
     </section>
   );
 }

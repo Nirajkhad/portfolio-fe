@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchProjects, type Project } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { useScrollAnimation } from '@/hooks/use-scroll-animation';
+import { EmptySection } from './empty-section';
 
 export function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -42,8 +43,10 @@ export function Projects() {
         </div>
       ) : error ? (
         <div className="text-red-500 text-sm">Error: {error}</div>
+      ) : projects.length === 0 ? (
+        <EmptySection message="No projects to show yet." />
       ) : (
-        <div 
+        <div
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
           style={{
             opacity: isVisible ? 1 : 0,
