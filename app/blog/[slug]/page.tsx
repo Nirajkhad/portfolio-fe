@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { fetchPostBySlug } from '@/lib/api';
 
@@ -47,27 +48,33 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-[#09090b]">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-[#0f0f11] border-b border-[#1f1f23]/50 px-10 py-3.5 flex justify-between items-center">
-        <Link href="/" className="font-mono text-[13px] text-[#4ade80] tracking-tight hover:opacity-80 transition-opacity">
-          niraj<span className="text-[#22d3ee]">.</span>com<span className="text-[#22d3ee]">.</span>np
+      <nav className="sticky top-0 z-50 bg-[#111113]/85 backdrop-blur-md border-b border-[#2a2a2e] px-6 sm:px-10 py-3.5 flex justify-between items-center">
+        <Link href="/" className="transition-transform hover:scale-105">
+          <Image 
+            src="/logo-navbar.svg" 
+            alt="NK Logo" 
+            width={48} 
+            height={32}
+            priority
+          />
         </Link>
         <Link
           href="/#writing"
-          className="font-mono text-[11px] text-[#3f3f46] hover:text-[#4ade80] transition-colors flex items-center gap-1.5"
+          className="text-xs sm:text-sm text-[#d1d5db] hover:text-[#4ade80] transition-colors flex items-center gap-2 font-medium"
         >
-          <span className="text-[10px]">←</span>
+          <span className="text-xs">←</span>
           back to writing
         </Link>
       </nav>
 
-      <main className="max-w-[680px] mx-auto px-6 py-12">
+      <main className="max-w-[720px] mx-auto px-5 sm:px-8 py-10 sm:py-16">
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
-          <div className="flex gap-[5px] mb-4 flex-wrap">
+          <div className="flex gap-2 mb-5 flex-wrap">
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="font-mono text-[9px] px-[7px] py-[2px] rounded text-[#4ade80] border border-[#4ade80]/20 bg-[#4ade80]/5"
+                className="text-[9px] sm:text-[10px] px-2 py-[3px] rounded-md text-[#4ade80] border border-[#4ade80]/30 bg-[#4ade80]/10 font-medium"
               >
                 {tag}
               </span>
@@ -76,12 +83,12 @@ export default async function BlogPostPage({ params }: PageProps) {
         )}
 
         {/* Title */}
-        <h1 className="text-[22px] font-bold text-[#fafafa] leading-[1.35] mb-4 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f9fafb] leading-tight mb-5 tracking-tight">
           {post.title}
         </h1>
 
         {/* Meta */}
-        <div className="font-mono text-[10px] text-[#3f3f46] flex items-center gap-3 mb-8 pb-6 border-b border-[#1a1a1e]">
+        <div className="font-mono text-[10px] sm:text-xs text-[#71717a] flex items-center gap-3 mb-10 pb-8 border-b border-[#27272a]/50">
           <span>{formattedDate}</span>
           <span className="text-[#27272a]">·</span>
           <span>{post.read_time} min read</span>
@@ -89,7 +96,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* Cover Image */}
         {post.cover_image && (
-          <div className="mb-8 rounded-[10px] overflow-hidden border border-[#1a1a1e]">
+          <div className="mb-10 rounded-xl overflow-hidden border border-[#27272a]/50">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={post.cover_image}
@@ -100,16 +107,16 @@ export default async function BlogPostPage({ params }: PageProps) {
         )}
 
         {/* Excerpt */}
-        <p className="text-[13px] text-[#71717a] leading-[1.75] mb-8 italic border-l-2 border-[#4ade80]/30 pl-4">
+        <p className="text-sm sm:text-base text-[#9ca3af] leading-relaxed mb-10 italic border-l-2 border-[#4ade80]/40 pl-5">
           {post.excerpt}
         </p>
 
         {/* Body */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           {paragraphs.map((paragraph, index) => (
             <p
               key={index}
-              className="text-[13px] text-[#a1a1aa] leading-[1.8]"
+              className="text-sm sm:text-base text-[#d1d5db] leading-relaxed"
             >
               {paragraph}
             </p>
@@ -117,17 +124,14 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
 
         {/* Footer */}
-        <div className="mt-12 pt-6 border-t border-[#1a1a1e] flex items-center justify-between">
+        <div className="mt-16 pt-8 border-t border-[#27272a]/50 flex items-center justify-between">
           <Link
             href="/#writing"
-            className="font-mono text-[11px] text-[#3f3f46] hover:text-[#4ade80] transition-colors flex items-center gap-1.5"
+            className="text-xs sm:text-sm text-[#9ca3af] hover:text-[#4ade80] transition-colors flex items-center gap-2 font-medium"
           >
-            <span className="text-[10px]">←</span>
+            <span className="text-xs">←</span>
             all posts
           </Link>
-          <span className="font-mono text-[10px] text-[#27272a]">
-            niraj<span className="text-[#22d3ee]/50">.</span>com<span className="text-[#22d3ee]/50">.</span>np
-          </span>
         </div>
       </main>
     </div>

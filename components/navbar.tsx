@@ -8,7 +8,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#0f0f11] border-b border-[#1f1f23]/50 px-4 sm:px-6 md:px-8 lg:px-10 py-3.5 flex justify-between items-center">
+    <nav className="sticky top-0 z-50 bg-[#111113]/85 backdrop-blur-md border-b border-[#2a2a2e] px-4 sm:px-6 md:px-8 lg:px-10 py-3.5 flex justify-between items-center">
       <a href="/" className="transition-transform hover:scale-105">
         <Image 
           src="/logo-navbar.svg" 
@@ -25,7 +25,7 @@ export function Navbar() {
           <a
             key={link.href}
             href={link.href}
-            className="font-mono text-[11px] text-[#3f3f46] hover:text-[#4ade80] transition-colors"
+            className="text-sm text-[#d1d5db] hover:text-[#4ade80] transition-colors duration-200 font-medium"
           >
             {link.label}
           </a>
@@ -58,14 +58,14 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-[#0f0f11] border-b border-[#1f1f23]/50 md:hidden">
+        <div className="absolute top-full left-0 right-0 bg-[#111113]/95 backdrop-blur-md border-b border-[#2a2a2e] md:hidden">
           <div className="flex flex-col py-4 px-4 gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="font-mono text-[11px] text-[#3f3f46] hover:text-[#4ade80] transition-colors"
+                className="text-sm text-[#d1d5db] hover:text-[#4ade80] transition-colors duration-200 font-medium"
               >
                 {link.label}
               </a>

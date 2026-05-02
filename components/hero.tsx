@@ -44,12 +44,12 @@ export function Hero() {
 
   if (state.loading) {
     return (
-      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <div className="animate-pulse">
-          <div className="h-4 bg-[#27272a] rounded w-32 mb-3"></div>
-          <div className="h-14 bg-[#27272a] rounded w-48 mb-4"></div>
-          <div className="h-6 bg-[#27272a] rounded w-64 mb-4"></div>
-          <div className="h-20 bg-[#27272a] rounded w-full max-w-[500px] mb-5"></div>
+          <div className="h-4 bg-[#18181b] rounded w-32 mb-3"></div>
+          <div className="h-14 bg-[#18181b] rounded w-48 mb-4"></div>
+          <div className="h-6 bg-[#18181b] rounded w-64 mb-4"></div>
+          <div className="h-20 bg-[#18181b] rounded w-full max-w-[500px] mb-5"></div>
         </div>
       </section>
     );
@@ -57,7 +57,7 @@ export function Hero() {
 
   if (state.error || !state.data) {
     return (
-      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <div className="text-red-500 text-sm">
           Failed to load portfolio data. {state.error && `Error: ${state.error}`}
         </div>
@@ -76,7 +76,7 @@ export function Hero() {
   }));
 
   return (
-    <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10">
+    <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
       {/* Kicker line */}
       <div className="flex items-center gap-2 mb-3">
         <div className="h-px w-5 sm:w-7 bg-[#4ade80] opacity-40"></div>
@@ -94,10 +94,10 @@ export function Hero() {
       </h1>
 
       {/* Role */}
-      <p className="font-mono text-sm sm:text-base md:text-lg text-[#3f3f46] mt-2 mb-5">{`// ${title}`}</p>
+      <p className="font-mono text-sm sm:text-base md:text-lg text-[#9ca3af] mt-2 mb-5">{`// ${title}`}</p>
 
       {/* Bio with Typewriter Effect */}
-      <p className="text-xs sm:text-sm text-[#71717a] leading-[1.8] mb-5 max-w-full sm:max-w-[500px] min-h-[3rem]">
+      <p className="text-xs sm:text-sm text-[#d1d5db] leading-[1.8] mb-5 max-w-full sm:max-w-[500px] min-h-[3rem]">
         <Typewriter 
           text={bio} 
           speed={30} 
@@ -107,7 +107,7 @@ export function Hero() {
       </p>
 
       {/* Location */}
-      <div className="flex items-center gap-[7px] mb-6 font-mono text-[10px] sm:text-[11px] text-[#27272a]">
+      <div className="flex items-center gap-[7px] mb-6 font-mono text-[10px] sm:text-[11px] text-[#9ca3af]">
         <span className="w-1.5 h-1.5 bg-[#4ade80] rounded-full animate-pulse opacity-60"></span>
         <span>{location}</span>
       </div>
@@ -124,7 +124,7 @@ export function Hero() {
                 globalThis.window.location.href = btn.href;
               }
             }}
-            className={`font-mono text-[10px] sm:text-[11px] px-3 sm:px-3.5 py-[6px] sm:py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[6px] sm:gap-[7px] cursor-pointer border border-[#27272a]/50 text-[#52525b] hover:text-[#4ade80] hover:border-[#4ade80]`}
+            className={`font-mono text-[10px] sm:text-[11px] px-3 sm:px-3.5 py-[6px] sm:py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[6px] sm:gap-[7px] cursor-pointer bg-[#111827] border border-[#1f2937] text-[#9ca3af] hover:text-[#4ade80] hover:border-[#4ade80]`}
           >
             <i className={`${btn.iconClass} text-[11px] sm:text-[12px]`} />
             <span>{btn.label}</span>

@@ -27,11 +27,11 @@ export function Writing() {
 
   if (loading) {
     return (
-      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="writing" />
-        <div className="animate-pulse flex flex-col gap-2">
+        <div className="animate-pulse flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 bg-[#18181b] rounded" />
+            <div key={i} className="h-28 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
       </section>
@@ -40,7 +40,7 @@ export function Writing() {
 
   if (error) {
     return (
-      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="writing" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -48,24 +48,24 @@ export function Writing() {
   }
 
   return (
-    <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
+    <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
       <SectionHeader title="writing" />
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3 sm:gap-4">
         {posts.map((post) => (
           <button
             key={post.id}
             onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
-            className="border border-[#1a1a1e] rounded-[10px] px-4 sm:px-[18px] py-3.5 sm:py-4 flex justify-between items-start gap-3 cursor-pointer hover:border-[#27272a] transition-colors text-left"
+            className="border border-[#27272a]/50 rounded-xl px-5 sm:px-6 py-4 sm:py-5 flex justify-between items-start gap-4 cursor-pointer hover:border-[#4ade80]/40 transition-colors text-left"
           >
             <div className="flex-1">
               {/* Tags */}
               {post.tags && post.tags.length > 0 && (
-                <div className="flex gap-[5px] mb-[7px] flex-wrap">
+                <div className="flex gap-2 mb-2 flex-wrap">
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-[9px] px-[7px] py-[2px] rounded text-[#4ade80] border border-[#4ade80]/20 bg-[#4ade80]/5"
+                      className="text-[9px] sm:text-[10px] px-2 py-[3px] rounded-md text-[#4ade80] border border-[#4ade80]/30 bg-[#4ade80]/10 font-medium"
                     >
                       {tag}
                     </span>
@@ -74,17 +74,17 @@ export function Writing() {
               )}
 
               {/* Title */}
-              <h3 className="text-xs sm:text-[13px] font-semibold text-[#d4d4d8] mb-[5px] leading-[1.4]">
+              <h3 className="text-sm sm:text-base font-semibold text-[#f9fafb] mb-2 leading-[1.3]">
                 {post.title}
               </h3>
 
               {/* Excerpt */}
-              <p className="text-[10px] sm:text-[11px] text-[#3f3f46] leading-[1.6] mb-2">
+              <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed mb-3">
                 {post.excerpt}
               </p>
 
               {/* Meta */}
-              <div className="font-mono text-[9px] sm:text-[10px] text-[#27272a] flex gap-2 sm:gap-3 flex-wrap">
+              <div className="font-mono text-[9px] sm:text-[10px] text-[#71717a] flex gap-3 flex-wrap">
                 {post.published_at && (
                   <span>
                     {new Date(post.published_at).toLocaleDateString('en-US', {
@@ -99,7 +99,7 @@ export function Writing() {
             </div>
 
             {/* Arrow */}
-            <span className="text-xs sm:text-[13px] text-[#27272a] mt-[2px] flex-shrink-0">↗</span>
+            <span className="text-base text-[#9ca3af] mt-1 flex-shrink-0">→</span>
           </button>
         ))}
       </div>

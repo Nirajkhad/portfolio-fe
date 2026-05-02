@@ -27,11 +27,11 @@ export function Experience() {
 
   if (loading) {
     return (
-      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="experience" />
-        <div className="animate-pulse space-y-7">
+        <div className="animate-pulse flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-[#18181b] rounded" />
+            <div key={i} className="h-32 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
       </section>
@@ -40,7 +40,7 @@ export function Experience() {
 
   if (error) {
     return (
-      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="experience" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -48,59 +48,55 @@ export function Experience() {
   }
 
   return (
-    <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
+    <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
       <SectionHeader title="experience" />
 
-      <div className="space-y-7">
+      <div className="flex flex-col gap-4">
         {experiences.map((exp) => (
-          <div key={exp.id} className="grid grid-cols-[70px_1fr] sm:grid-cols-[90px_1fr]">
-            {/* Timeline */}
-            <div className="font-mono text-[9px] sm:text-[10px] text-[#27272a] text-right pr-3 sm:pr-5 pt-[3px] leading-[1.9]">
-              {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-              <br />
-              —
-              <br />
-              {exp.end_date ? new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Present'}
-            </div>
-
-            {/* Content */}
-            <div className="border-l border-[#27272a]/50 pl-3 sm:pl-5 relative">
-              {/* Node */}
-              <div
-                className={`absolute left-[-5px] top-[5px] w-2 h-2 rounded-full bg-[#09090b] border-[1.5px] ${
-                  exp.is_current ? 'border-[#4ade80]' : 'border-[#27272a]'
-                }`}
-              ></div>
-
-              <div className="text-xs sm:text-sm font-semibold text-[#f4f4f5]">
-                {exp.role}
-              </div>
-
-              <div className="font-mono text-[11px] sm:text-xs text-[#4ade80] mt-[3px] mb-1 flex items-center gap-2 flex-wrap">
-                {exp.company}
-                <span className="text-[9px] text-[#3f3f46] bg-[#18181b] border border-[#27272a]/50 px-[7px] py-[2px] rounded">
-                  {exp.employment_type}
-                </span>
-              </div>
-
-              {exp.location && (
-                <div className="text-[9px] text-[#3f3f46] mb-2 font-mono">
-                  📍 {exp.location}
+          <div key={exp.id} className="border border-[#27272a]/50 rounded-xl p-5 sm:p-6 hover:border-[#4ade80]/40 transition-colors duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3">
+              <div className="flex-1">
+                <div className="text-sm sm:text-base font-semibold text-[#f9fafb] mb-1">
+                  {exp.role}
                 </div>
-              )}
 
-              {exp.bullets?.map((bullet) => (
-                <div
-                  key={bullet.id}
-                  className="flex gap-[6px] sm:gap-[7px] text-[11px] sm:text-xs text-[#52525b] leading-[1.65] mb-[3px]"
-                >
-                  <span className="text-[#4ade80] opacity-35 flex-shrink-0">
-                    ›
+                <div className="font-mono text-xs sm:text-sm text-[#4ade80] flex items-center gap-2 flex-wrap">
+                  {exp.company}
+                  <span className="text-[9px] sm:text-[10px] text-[#9ca3af] bg-[#18181b] border border-[#27272a] px-2 py-[3px] rounded-md">
+                    {exp.employment_type}
                   </span>
-                  <span>{bullet.content}</span>
                 </div>
-              ))}
+              </div>
+
+              <div className="font-mono text-[10px] sm:text-xs text-[#71717a] sm:text-right flex-shrink-0">
+                {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                {' — '}
+                {exp.end_date ? new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Present'}
+              </div>
             </div>
+
+            {exp.location && (
+              <div className="text-[10px] sm:text-xs text-[#9ca3af] mb-3 font-mono flex items-center gap-1">
+                <span>📍</span>
+                <span>{exp.location}</span>
+              </div>
+            )}
+
+            {exp.bullets && exp.bullets.length > 0 && (
+              <div className="space-y-2">
+                {exp.bullets.map((bullet) => (
+                  <div
+                    key={bullet.id}
+                    className="flex gap-2 text-xs sm:text-sm text-[#d1d5db] leading-relaxed"
+                  >
+                    <span className="text-[#4ade80] opacity-50 flex-shrink-0 mt-[2px]">
+                      ›
+                    </span>
+                    <span>{bullet.content}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

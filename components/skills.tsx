@@ -5,15 +5,15 @@ import { fetchSkillsGrouped, type SkillCategory } from '@/lib/api';
 import { SectionHeader } from './section-header';
 
 const colorMap: Record<string, string> = {
-  'Languages': 'text-[#86efac] bg-[#0d1f14] border-[#1a3a22]',
-  'Frameworks': 'text-[#5eead4] bg-[#0a1e1a] border-[#133028]',
-  'Databases': 'text-[#93c5fd] bg-[#0d1829] border-[#162340]',
-  'Tools': 'text-[#fcd34d] bg-[#1a1408] border-[#2e2210]',
-  'Cloud': 'text-[#c4b5fd] bg-[#160f28] border-[#271a40]',
-  'DevOps': 'text-[#a1a1aa] bg-[#18181b] border-[#27272a]',
+  'Languages': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
+  'Frameworks': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
+  'Databases': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
+  'Tools': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
+  'Cloud': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
+  'DevOps': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
 };
 
-const defaultColor = 'text-[#a1a1aa] bg-[#18181b] border-[#27272a]';
+const defaultColor = 'text-[#9ca3af] bg-[#18181b] border-[#27272a]';
 
 export function Skills() {
   const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
@@ -38,11 +38,11 @@ export function Skills() {
 
   if (loading) {
     return (
-      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="skills" />
-        <div className="animate-pulse flex flex-col gap-3.5">
+        <div className="animate-pulse flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 bg-[#18181b] rounded" />
+            <div key={i} className="h-24 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
       </section>
@@ -51,7 +51,7 @@ export function Skills() {
 
   if (error) {
     return (
-      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
+      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
         <SectionHeader title="skills" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -59,24 +59,24 @@ export function Skills() {
   }
 
   return (
-    <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
+    <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
       <SectionHeader title="skills" />
 
-      <div className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-4">
         {skillCategories.map((category) => (
           <div
             key={category.category}
-            className="flex flex-col sm:grid sm:grid-cols-[90px_1fr] gap-2 sm:gap-4 items-start"
+            className="border border-[#27272a]/50 rounded-xl p-4 sm:p-5 hover:border-[#4ade80]/40 transition-colors duration-200"
           >
-            <div className="font-mono text-[10px] text-[#27272a] sm:text-right">
+            <div className="font-mono text-xs sm:text-sm font-medium text-[#f9fafb] mb-3">
               {category.category}
             </div>
 
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {category.skills.map((skill) => (
                 <span
                   key={skill.id}
-                  className={`text-[11px] sm:text-xs font-medium px-[10px] sm:px-[11px] py-1 rounded-md border ${colorMap[category.category] || defaultColor}`}
+                  className={`text-[10px] sm:text-xs font-medium px-2.5 py-1 rounded-md border ${colorMap[category.category] || defaultColor}`}
                 >
                   {skill.name}
                 </span>
