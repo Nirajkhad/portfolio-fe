@@ -116,6 +116,7 @@ export interface Post {
 // API Functions
 async function fetchApi<T>(endpoint: string): Promise<T> {
   try {
+    console.log(`Fetching from API: ${API_BASE_URL}${endpoint}`);
     const response = await fetch(`${API_BASE_URL}${endpoint}`);
 
     if (!response.ok) {
