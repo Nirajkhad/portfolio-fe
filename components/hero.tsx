@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
+import { Typewriter } from './typewriter';
 
 interface CtaButton {
   label: string;
@@ -95,9 +96,14 @@ export function Hero() {
       {/* Role */}
       <p className="font-mono text-sm sm:text-base md:text-lg text-[#3f3f46] mt-2 mb-5">{`// ${title}`}</p>
 
-      {/* Bio */}
-      <p className="text-xs sm:text-sm text-[#71717a] leading-[1.8] mb-5 max-w-full sm:max-w-[500px]">
-        {bio}
+      {/* Bio with Typewriter Effect */}
+      <p className="text-xs sm:text-sm text-[#71717a] leading-[1.8] mb-5 max-w-full sm:max-w-[500px] min-h-[3rem]">
+        <Typewriter 
+          text={bio} 
+          speed={30} 
+          delay={500}
+          cursor={true}
+        />
       </p>
 
       {/* Location */}
