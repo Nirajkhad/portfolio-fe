@@ -3,6 +3,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { fetchPostBySlug } from '@/lib/api';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -30,8 +34,6 @@ export default async function BlogPostPage({ params }: PageProps) {
   } catch {
     notFound();
   }
-
-  const paragraphs = post.body.split('\n\n').filter(Boolean);
 
   const formattedDate = post.published_at
     ? new Date(post.published_at).toLocaleDateString('en-US', {
@@ -112,16 +114,33 @@ export default async function BlogPostPage({ params }: PageProps) {
         </p>
 
         {/* Body */}
-        <div className="flex flex-col gap-6">
-          {paragraphs.map((paragraph, index) => (
-            <p
-              key={index}
-              className="text-sm sm:text-base text-[#d1d5db] leading-relaxed"
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <article className="prose prose-invert prose-zinc max-w-none
+          prose-headings:text-[#f9fafb] prose-headings:font-bold prose-headings:tracking-tight
+          prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4
+          prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-3
+          prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-2
+          prose-p:text-[#d1d5db] prose-p:text-sm sm:prose-p:text-base prose-p:leading-relaxed
+          prose-a:text-[#4ade80] prose-a:no-underline hover:prose-a:underline
+          prose-strong:text-[#f9fafb] prose-strong:font-semibold
+          prose-code:text-[#4ade80] prose-code:bg-[#1a1a1d] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-[''] prose-code:after:content-['']
+          prose-pre:bg-[#1a1a1d] prose-pre:border prose-pre:border-[#27272a] prose-pre:rounded-lg
+          prose-ul:text-[#d1d5db] prose-ul:text-sm sm:prose-ul:text-base
+          prose-ol:text-[#d1d5db] prose-ol:text-sm sm:prose-ol:text-base
+          prose-li:marker:text-[#4ade80]
+          prose-blockquote:border-l-[#4ade80] prose-blockquote:text-[#9ca3af] prose-blockquote:italic
+          prose-img:rounded-lg prose-img:border prose-img:border-[#27272a]
+          prose-hr:border-[#27272a]
+          prose-table:text-sm
+          prose-th:text-[#f9fafb]
+          prose-td:text-[#d1d5db]
+        ">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          >
+            {post.body}
+          </ReactMarkdown>
+        </article>
 
         {/* Footer */}
         <div className="mt-16 pt-8 border-t border-[#27272a]/50 flex items-center justify-between">

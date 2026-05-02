@@ -14,6 +14,7 @@
   animation: back-to-top-in 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 @import 'tailwindcss';
+@import '@tailwindcss/typography';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
