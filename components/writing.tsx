@@ -27,7 +27,7 @@ export function Writing() {
 
   if (loading) {
     return (
-      <section id="writing" className="px-10">
+      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="writing" />
         <div className="animate-pulse flex flex-col gap-2">
           {[1, 2, 3].map((i) => (
@@ -40,7 +40,7 @@ export function Writing() {
 
   if (error) {
     return (
-      <section id="writing" className="px-10">
+      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="writing" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -48,15 +48,15 @@ export function Writing() {
   }
 
   return (
-    <section id="writing" className="px-10">
+    <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10">
       <SectionHeader title="writing" />
 
       <div className="flex flex-col gap-2">
         {posts.map((post) => (
-          <article
+          <button
             key={post.id}
             onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
-            className="border border-[#1a1a1e] rounded-[10px] px-[18px] py-4 flex justify-between items-start gap-3 cursor-pointer hover:border-[#27272a] transition-colors"
+            className="border border-[#1a1a1e] rounded-[10px] px-4 sm:px-[18px] py-3.5 sm:py-4 flex justify-between items-start gap-3 cursor-pointer hover:border-[#27272a] transition-colors text-left"
           >
             <div className="flex-1">
               {/* Tags */}
@@ -74,17 +74,17 @@ export function Writing() {
               )}
 
               {/* Title */}
-              <h3 className="text-[13px] font-semibold text-[#d4d4d8] mb-[5px] leading-[1.4]">
+              <h3 className="text-xs sm:text-[13px] font-semibold text-[#d4d4d8] mb-[5px] leading-[1.4]">
                 {post.title}
               </h3>
 
               {/* Excerpt */}
-              <p className="text-[11px] text-[#3f3f46] leading-[1.6] mb-2">
+              <p className="text-[10px] sm:text-[11px] text-[#3f3f46] leading-[1.6] mb-2">
                 {post.excerpt}
               </p>
 
               {/* Meta */}
-              <div className="font-mono text-[10px] text-[#27272a] flex gap-3">
+              <div className="font-mono text-[9px] sm:text-[10px] text-[#27272a] flex gap-2 sm:gap-3 flex-wrap">
                 {post.published_at && (
                   <span>
                     {new Date(post.published_at).toLocaleDateString('en-US', {
@@ -99,8 +99,8 @@ export function Writing() {
             </div>
 
             {/* Arrow */}
-            <span className="text-[13px] text-[#27272a] mt-[2px]">↗</span>
-          </article>
+            <span className="text-xs sm:text-[13px] text-[#27272a] mt-[2px] flex-shrink-0">↗</span>
+          </button>
         ))}
       </div>
     </section>

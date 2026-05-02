@@ -38,7 +38,7 @@ export function Skills() {
 
   if (loading) {
     return (
-      <section id="skills" className="px-10">
+      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="skills" />
         <div className="animate-pulse flex flex-col gap-3.5">
           {[1, 2, 3].map((i) => (
@@ -51,7 +51,7 @@ export function Skills() {
 
   if (error) {
     return (
-      <section id="skills" className="px-10">
+      <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="skills" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -59,16 +59,16 @@ export function Skills() {
   }
 
   return (
-    <section id="skills" className="px-10">
+    <section id="skills" className="px-4 sm:px-6 md:px-8 lg:px-10">
       <SectionHeader title="skills" />
 
       <div className="flex flex-col gap-3.5">
         {skillCategories.map((category) => (
           <div
             key={category.category}
-            className="grid grid-cols-[90px_1fr] gap-4 items-start"
+            className="flex flex-col sm:grid sm:grid-cols-[90px_1fr] gap-2 sm:gap-4 items-start"
           >
-            <div className="font-mono text-[10px] text-[#27272a] text-right">
+            <div className="font-mono text-[10px] text-[#27272a] sm:text-right">
               {category.category}
             </div>
 
@@ -76,7 +76,7 @@ export function Skills() {
               {category.skills.map((skill) => (
                 <span
                   key={skill.id}
-                  className={`text-xs font-medium px-[11px] py-1 rounded-md border ${colorMap[category.category] || defaultColor}`}
+                  className={`text-[11px] sm:text-xs font-medium px-[10px] sm:px-[11px] py-1 rounded-md border ${colorMap[category.category] || defaultColor}`}
                 >
                   {skill.name}
                 </span>

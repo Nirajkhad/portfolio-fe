@@ -1,3 +1,6 @@
+// OPTIONAL: Navbar with Logo Integration Example
+// This shows how you could integrate the NK logo into your navbar
+
 'use client';
 
 import { useState } from 'react';
@@ -9,14 +12,19 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-[#0f0f11] border-b border-[#1f1f23]/50 px-4 sm:px-6 md:px-8 lg:px-10 py-3.5 flex justify-between items-center">
-      <a href="/" className="transition-transform hover:scale-105">
+      {/* Logo + Domain Name */}
+      <a href="/" className="flex items-center gap-2 group">
         <Image 
           src="/logo-navbar.svg" 
-          alt="NK Logo" 
-          width={48} 
-          height={32}
+          alt="NK" 
+          width={32} 
+          height={24}
+          className="hidden sm:block transition-transform group-hover:scale-110"
           priority
         />
+        <span className="font-mono text-xs sm:text-[13px] text-[#4ade80] tracking-tight">
+          niraj<span className="text-[#22d3ee]">.</span>com<span className="text-[#22d3ee]">.</span>np
+        </span>
       </a>
       
       {/* Desktop Navigation */}

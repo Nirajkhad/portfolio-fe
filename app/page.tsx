@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#09090b]">
       <Navbar />
-      <div className="flex flex-col gap-16 pb-16">
+      <div className="flex flex-col gap-12 sm:gap-14 md:gap-16 pb-12 sm:pb-14 md:pb-16">
         <Hero />
         <Experience />
         <Projects />

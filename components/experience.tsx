@@ -27,7 +27,7 @@ export function Experience() {
 
   if (loading) {
     return (
-      <section id="experience" className="px-10">
+      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="experience" />
         <div className="animate-pulse space-y-7">
           {[1, 2, 3].map((i) => (
@@ -40,7 +40,7 @@ export function Experience() {
 
   if (error) {
     return (
-      <section id="experience" className="px-10">
+      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
         <SectionHeader title="experience" />
         <div className="text-red-500 text-sm">Error: {error}</div>
       </section>
@@ -48,14 +48,14 @@ export function Experience() {
   }
 
   return (
-    <section id="experience" className="px-10">
+    <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10">
       <SectionHeader title="experience" />
 
       <div className="space-y-7">
         {experiences.map((exp) => (
-          <div key={exp.id} className="grid grid-cols-[90px_1fr]">
+          <div key={exp.id} className="grid grid-cols-[70px_1fr] sm:grid-cols-[90px_1fr]">
             {/* Timeline */}
-            <div className="font-mono text-[10px] text-[#27272a] text-right pr-5 pt-[3px] leading-[1.9]">
+            <div className="font-mono text-[9px] sm:text-[10px] text-[#27272a] text-right pr-3 sm:pr-5 pt-[3px] leading-[1.9]">
               {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
               <br />
               —
@@ -64,7 +64,7 @@ export function Experience() {
             </div>
 
             {/* Content */}
-            <div className="border-l border-[#27272a]/50 pl-5 relative">
+            <div className="border-l border-[#27272a]/50 pl-3 sm:pl-5 relative">
               {/* Node */}
               <div
                 className={`absolute left-[-5px] top-[5px] w-2 h-2 rounded-full bg-[#09090b] border-[1.5px] ${
@@ -72,11 +72,11 @@ export function Experience() {
                 }`}
               ></div>
 
-              <div className="text-sm font-semibold text-[#f4f4f5]">
+              <div className="text-xs sm:text-sm font-semibold text-[#f4f4f5]">
                 {exp.role}
               </div>
 
-              <div className="font-mono text-xs text-[#4ade80] mt-[3px] mb-1 flex items-center gap-2">
+              <div className="font-mono text-[11px] sm:text-xs text-[#4ade80] mt-[3px] mb-1 flex items-center gap-2 flex-wrap">
                 {exp.company}
                 <span className="text-[9px] text-[#3f3f46] bg-[#18181b] border border-[#27272a]/50 px-[7px] py-[2px] rounded">
                   {exp.employment_type}
@@ -89,10 +89,10 @@ export function Experience() {
                 </div>
               )}
 
-              {exp.bullets && exp.bullets.map((bullet) => (
+              {exp.bullets?.map((bullet) => (
                 <div
                   key={bullet.id}
-                  className="flex gap-[7px] text-xs text-[#52525b] leading-[1.65] mb-[3px]"
+                  className="flex gap-[6px] sm:gap-[7px] text-[11px] sm:text-xs text-[#52525b] leading-[1.65] mb-[3px]"
                 >
                   <span className="text-[#4ade80] opacity-35 flex-shrink-0">
                     ›
