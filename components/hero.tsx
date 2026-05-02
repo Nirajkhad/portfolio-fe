@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
-import { Typewriter } from './typewriter';
 
 interface CtaButton {
   label: string;
@@ -23,6 +22,16 @@ export function Hero() {
     loading: true,
     error: null,
   });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Hero section should animate immediately on mount
+    const timer = setTimeout(() => {
+      console.log('🎬 Hero animation triggered');
+      setIsVisible(true);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,7 +53,7 @@ export function Hero() {
 
   if (state.loading) {
     return (
-      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
+      <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
         <div className="animate-pulse">
           <div className="h-4 bg-[#18181b] rounded w-32 mb-3"></div>
           <div className="h-14 bg-[#18181b] rounded w-48 mb-4"></div>
@@ -57,7 +66,7 @@ export function Hero() {
 
   if (state.error || !state.data) {
     return (
-      <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
+      <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
         <div className="text-red-500 text-sm">
           Failed to load portfolio data. {state.error && `Error: ${state.error}`}
         </div>
@@ -76,7 +85,15 @@ export function Hero() {
   }));
 
   return (
-    <section id="home" className="pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
+    <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
+      <div
+        style={{
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
+          transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          willChange: 'opacity, transform'
+        }}
+      >
       {/* Kicker line */}
       <div className="flex items-center gap-2 mb-3">
         <div className="h-px w-5 sm:w-7 bg-[#4ade80] opacity-40"></div>
@@ -96,14 +113,9 @@ export function Hero() {
       {/* Role */}
       <p className="font-mono text-sm sm:text-base md:text-lg text-[#9ca3af] mt-2 mb-5">{`// ${title}`}</p>
 
-      {/* Bio with Typewriter Effect */}
-      <p className="text-xs sm:text-sm text-[#d1d5db] leading-[1.8] mb-5 max-w-full sm:max-w-[500px] min-h-[3rem]">
-        <Typewriter 
-          text={bio} 
-          speed={30} 
-          delay={500}
-          cursor={true}
-        />
+      {/* Bio */}
+      <p className="text-xs sm:text-sm text-[#d1d5db] leading-[1.8] mb-5 max-w-full sm:max-w-[500px]">
+        {bio}
       </p>
 
       {/* Location */}
@@ -130,6 +142,7 @@ export function Hero() {
             <span>{btn.label}</span>
           </button>
         ))}
+      </div>
       </div>
     </section>
   );

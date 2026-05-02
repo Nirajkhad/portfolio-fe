@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { fetchExperiences, type Experience } from '@/lib/api';
 import { SectionHeader } from './section-header';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export function Experience() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { ref, isVisible } = useScrollAnimation();
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,33 +27,28 @@ export function Experience() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="experience" />
+  return (
+    <section id="experience" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
+      <SectionHeader title="experience" />
+
+      {loading ? (
         <div className="animate-pulse flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-32 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="experience" />
+      ) : error ? (
         <div className="text-red-500 text-sm">Error: {error}</div>
-      </section>
-    );
-  }
-
-  return (
-    <section id="experience" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-      <SectionHeader title="experience" />
-
-      <div className="flex flex-col gap-4">
+      ) : (
+        <div 
+          className="flex flex-col gap-4"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
+            transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            willChange: 'opacity, transform'
+          }}
+        >
         {experiences.map((exp) => (
           <div key={exp.id} className="border border-[#27272a]/50 rounded-xl p-5 sm:p-6 hover:border-[#4ade80]/40 transition-colors duration-200">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3">
@@ -99,7 +96,8 @@ export function Experience() {
             )}
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </section>
   );
 }

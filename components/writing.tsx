@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { fetchPublishedPosts, type Post } from '@/lib/api';
 import { SectionHeader } from './section-header';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export function Writing() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { ref, isVisible } = useScrollAnimation();
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,33 +27,28 @@ export function Writing() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="writing" />
-        <div className="animate-pulse flex flex-col gap-4">
+  return (
+    <section id="writing" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
+      <SectionHeader title="writing" />
+
+      {loading ? (
+        <div className="animate-pulse flex flex-col gap-3 sm:gap-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-28 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="writing" />
+      ) : error ? (
         <div className="text-red-500 text-sm">Error: {error}</div>
-      </section>
-    );
-  }
-
-  return (
-    <section id="writing" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-      <SectionHeader title="writing" />
-
-      <div className="flex flex-col gap-3 sm:gap-4">
+      ) : (
+        <div 
+          className="flex flex-col gap-3 sm:gap-4"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
+            transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            willChange: 'opacity, transform'
+          }}
+        >
         {posts.map((post) => (
           <button
             key={post.id}
@@ -102,7 +99,8 @@ export function Writing() {
             <span className="text-base text-[#9ca3af] mt-1 flex-shrink-0">→</span>
           </button>
         ))}
-      </div>
+        </div>
+      )}
     </section>
   );
 }

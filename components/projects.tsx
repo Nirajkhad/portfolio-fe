@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { fetchProjects, type Project } from '@/lib/api';
 import { SectionHeader } from './section-header';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { ref, isVisible } = useScrollAnimation();
 
   useEffect(() => {
     const loadData = async () => {
@@ -25,36 +27,31 @@ export function Projects() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <section id="projects" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="projects" />
+  const featuredProject = projects.find((p) => p.is_featured);
+  const otherProjects = projects.filter((p) => !p.is_featured);
+
+  return (
+    <section id="projects" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
+      <SectionHeader title="projects" />
+
+      {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-40 bg-[#18181b] border border-[#27272a] rounded-xl" />
           ))}
         </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="projects" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-        <SectionHeader title="projects" />
+      ) : error ? (
         <div className="text-red-500 text-sm">Error: {error}</div>
-      </section>
-    );
-  }
-
-  const featuredProject = projects.find((p) => p.is_featured);
-  const otherProjects = projects.filter((p) => !p.is_featured);
-
-  return (
-    <section id="projects" className="px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20">
-      <SectionHeader title="projects" />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      ) : (
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
+            transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            willChange: 'opacity, transform'
+          }}
+        >
         {/* Featured Project */}
         {featuredProject && (
           <div className="md:col-span-2 border border-[#27272a]/50 rounded-xl p-5 sm:p-6 relative hover:border-[#4ade80]/40 transition-colors duration-200">
@@ -147,7 +144,8 @@ export function Projects() {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
