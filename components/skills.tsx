@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { fetchSkillsGrouped, type SkillCategory } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { EmptySection } from './empty-section';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 export function Skills() {
+  const refresh = usePageRefresh();
   const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export function Skills() {
       finally { setLoading(false); }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

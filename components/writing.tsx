@@ -5,8 +5,10 @@ import { fetchPublishedPosts, type Post } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { EmptySection } from './empty-section';
 import { ReactionsBar } from './reactions-bar';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 export function Writing() {
+  const refresh = usePageRefresh();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ export function Writing() {
       finally { setLoading(false); }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -62,7 +64,7 @@ export function Writing() {
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-2">
                       {post.tags.map((tag) => (
-                        <span key={tag} className="font-mono text-[10px] text-[#f59e0b] border border-[#f59e0b]/15 bg-[#f59e0b]/6 px-2 py-0.5 rounded">{tag}</span>
+                        <span key={tag} className="font-mono text-[10px] text-[#f59e0b] border border-[#f59e0b]/15 bg-[#f59e0b]/6 px-2 py-0.5 rounded hover:border-[#f59e0b]/30 hover:bg-[#f59e0b]/10 transition-all duration-200">{tag}</span>
                       ))}
                     </div>
                   )}

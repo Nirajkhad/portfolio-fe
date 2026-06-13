@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 interface HeroState {
   data: PortfolioGeneralInfo | null;
@@ -19,6 +20,7 @@ const lines = [
 ];
 
 export function Hero() {
+  const refresh = usePageRefresh();
   const [state, setState] = useState<HeroState>({
     data: null, loading: true, error: null,
   });
@@ -46,7 +48,7 @@ export function Hero() {
       }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     if (state.loading) return;
@@ -73,7 +75,7 @@ export function Hero() {
             <span className="w-[10px] h-[10px] rounded-full bg-[#ff5f56]" />
             <span className="w-[10px] h-[10px] rounded-full bg-[#ffbd2e]" />
             <span className="w-[10px] h-[10px] rounded-full bg-[#27c93f]" />
-            <span className="font-mono text-[11px] text-[#52525b] ml-2">terminal — niraj</span>
+            <span className="font-mono text-[11px] text-[#52525b] ml-2 truncate">terminal — niraj</span>
           </div>
 
           <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-[1.8] min-h-[220px] sm:min-h-[240px]">
@@ -102,17 +104,17 @@ export function Hero() {
               <button
                 key={link.id}
                 onClick={() => globalThis.window?.open(link.url, '_blank', 'noopener,noreferrer')}
-                className="font-mono text-[11px] px-3.5 py-2 rounded-lg transition-all duration-200 cursor-pointer bg-[#10101a] border border-[#1e1e2a] text-[#a1a1aa] hover:text-[#4ade80] hover:border-[#4ade80]/30 inline-flex items-center gap-2"
+                className="font-mono text-[11px] px-3.5 py-2 rounded-lg transition-all duration-200 cursor-pointer bg-[#10101a] border border-[#1e1e2a] text-[#a1a1aa] hover:text-[#4ade80] hover:border-[#4ade80]/30 hover:scale-105 hover:-translate-y-0.5 active:scale-95 inline-flex items-center gap-2"
               >
-                <i className={`${link.icon} text-[11px]`} />
-                <span>{link.platform}</span>
+                <i className={`${link.icon} text-[11px] shrink-0`} />
+                <span className="truncate max-w-[160px]">{link.platform}</span>
               </button>
             ))}
           </div>
         )}
 
         {visibleLines >= allLines.length && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2" style={{ animation: 'fade-in 0.6s ease 0.3s both' }}>
+          <div className="flex justify-center pt-10 pb-2" style={{ animation: 'fade-in 0.6s ease 0.3s both' }}>
             <div className="flex flex-col items-center gap-1 text-[#52525b]">
               <svg className="w-4 h-4 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 5v14M5 12l7 7 7-7" />

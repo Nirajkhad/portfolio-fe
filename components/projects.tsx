@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { fetchProjects, type Project } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { EmptySection } from './empty-section';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 export function Projects() {
+  const refresh = usePageRefresh();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export function Projects() {
       finally { setLoading(false); }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,7 +58,7 @@ export function Projects() {
                 <span className="font-mono text-[10px] text-[#22d3ee] border border-[#22d3ee]/20 bg-[#22d3ee]/8 px-2 py-0.5 rounded uppercase tracking-wider">featured</span>
               </div>
               <div className="text-base sm:text-lg font-semibold text-[#e4e4e7] mb-2">{featuredProject.title}</div>
-              <div className="text-xs sm:text-sm text-[#a1a1aa] leading-relaxed mb-4 max-w-[600px]">{featuredProject.description}</div>
+              <div className="text-xs sm:text-sm text-[#a1a1aa] leading-relaxed mb-4">{featuredProject.description}</div>
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {featuredProject.tech_stacks?.map((tech) => (
                   <span key={tech.id} className="font-mono text-[11px] px-2.5 py-[3px] rounded border border-[#1e1e2a] bg-[#10101a] text-[#a1a1aa] hover:border-[#22d3ee]/20 hover:text-[#22d3ee] transition-all duration-200 inline-flex items-center gap-1 before:w-1 before:h-1 before:rounded-full before:bg-[#52525b] hover:before:bg-[#22d3ee]">{tech.name}</span>
@@ -64,10 +66,10 @@ export function Projects() {
               </div>
               <div className="flex gap-4">
                 {featuredProject.github_url && (
-                  <button onClick={() => window.open(featuredProject.github_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-colors cursor-pointer inline-flex items-center gap-1.5">View Code<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>
+                  <button onClick={() => window.open(featuredProject.github_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 active:scale-95">View Code<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>
                 )}
                 {featuredProject.live_url && (
-                  <button onClick={() => window.open(featuredProject.live_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-colors cursor-pointer inline-flex items-center gap-1.5">Live Demo<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>
+                  <button onClick={() => window.open(featuredProject.live_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 active:scale-95">Live Demo<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>
                 )}
               </div>
             </div>
@@ -89,8 +91,8 @@ export function Projects() {
                   ))}
                 </div>
                 <div className="flex gap-4">
-                  {project.github_url && <button onClick={() => window.open(project.github_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-colors cursor-pointer inline-flex items-center gap-1.5">View Code<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>}
-                  {project.live_url && <button onClick={() => window.open(project.live_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-colors cursor-pointer inline-flex items-center gap-1.5">Live Demo<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>}
+                  {project.github_url && <button onClick={() => window.open(project.github_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 active:scale-95">View Code<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>}
+                  {project.live_url && <button onClick={() => window.open(project.live_url || '', '_blank')} className="group font-mono text-xs text-[#a1a1aa] hover:text-[#22d3ee] transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 active:scale-95">Live Demo<span className="transition-transform duration-200 group-hover:translate-x-1">&#8594;</span></button>}
                 </div>
               </div>
             );

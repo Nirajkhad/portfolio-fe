@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
 import { SectionHeader } from './section-header';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 interface ContactState {
   data: PortfolioGeneralInfo | null;
@@ -11,6 +12,7 @@ interface ContactState {
 }
 
 export function Contact() {
+  const refresh = usePageRefresh();
   const [state, setState] = useState<ContactState>({ data: null, loading: true, error: null });
   const [isVisible, setIsVisible] = useState(false);
 
@@ -20,7 +22,7 @@ export function Contact() {
       catch (error) { setState({ data: null, loading: false, error: error instanceof Error ? error.message : 'Failed' }); }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,15 +54,15 @@ export function Contact() {
         >
           <div className="font-mono text-xs text-[#52525b]">$ echo &quot;let&apos;s work together&quot;</div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#e4e4e7]">Let&apos;s work together</h2>
-          <p className="text-sm text-[#a1a1aa] leading-relaxed max-w-[420px]">Got a project in mind? Reach out and let&apos;s create something amazing together.</p>
+          <p className="text-sm text-[#a1a1aa] leading-relaxed max-w-[500px]">Got a project in mind? Reach out and let&apos;s create something amazing together.</p>
 
           <div className="flex flex-col items-center gap-4 mt-2">
             {email && (
               <button
                 onClick={() => (globalThis.window.location.href = `mailto:${email}`)}
-                className="inline-flex items-center gap-2.5 bg-[#4ade80] text-[#0a0a0f] text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-[#22c55e] transition-all duration-200 cursor-pointer font-mono"
+                className="inline-flex items-center gap-2.5 bg-[#4ade80] text-[#0a0a0f] text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-[#22c55e] hover:scale-[1.02] hover:shadow-lg hover:shadow-[#4ade80]/20 active:scale-95 transition-all duration-200 cursor-pointer font-mono"
               >
-                <span>$ mail {email.split('@')[0]}</span>
+                <span className="truncate max-w-[200px] sm:max-w-none">$ mail {email.split('@')[0]}</span>
               </button>
             )}
 
@@ -70,7 +72,7 @@ export function Contact() {
                   <button
                     key={social.id}
                     onClick={() => globalThis.window?.open(social.url, '_blank', 'noopener,noreferrer')}
-                    className="group font-mono text-xs text-[#52525b] hover:text-[#4ade80] transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                    className="group font-mono text-xs text-[#52525b] hover:text-[#4ade80] transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 active:scale-95"
                   >
                     <span className="text-[10px]">$</span>
                     {social.platform}

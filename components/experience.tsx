@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { fetchExperiences, type Experience } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { EmptySection } from './empty-section';
+import { usePageRefresh } from '@/hooks/use-page-refresh';
 
 export function Experience() {
+  const refresh = usePageRefresh();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export function Experience() {
       finally { setLoading(false); }
     };
     loadData();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

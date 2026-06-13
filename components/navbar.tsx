@@ -77,7 +77,7 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className={`relative font-mono text-xs tracking-wide px-3 py-1.5 rounded-md transition-all duration-200 ${
+              className={`relative font-mono text-xs tracking-wide px-3 py-1.5 rounded-md transition-all duration-200 active:scale-95 ${
                 isActive
                   ? 'text-[#4ade80] bg-[#4ade80]/[0.06]'
                   : 'text-[#71717a] hover:text-[#e4e4e7] hover:bg-white/[0.03]'
@@ -90,7 +90,7 @@ export function Navbar() {
       </div>
 
       <button
-        className="md:hidden flex flex-col gap-1 w-6 h-5 justify-center items-center relative"
+        className="md:hidden w-11 h-11 flex flex-col gap-1 items-center justify-center relative -mr-2.5 rounded-lg hover:bg-white/[0.03] transition-colors duration-200"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
         aria-expanded={mobileMenuOpen}
@@ -126,7 +126,7 @@ export function Navbar() {
                     setMobileMenuOpen(false);
                     handleNavClick(e, link.href);
                   }}
-                  className={`font-mono text-xs px-3 py-2.5 rounded-md transition-all duration-200 ${
+                  className={`font-mono text-sm px-3 py-3.5 rounded-md transition-all duration-200 active:scale-[0.98] ${
                     isActive
                       ? 'text-[#4ade80] bg-[#4ade80]/[0.06]'
                       : 'text-[#71717a] hover:text-[#e4e4e7]'

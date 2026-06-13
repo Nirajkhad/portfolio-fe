@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 
 :root {
   --bg-primary: #0a0a0f;
@@ -71,53 +71,73 @@ html { scroll-behavior: smooth; }
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== REACTION ANIMATIONS ===== */
-@keyframes reaction-bounce {
+/* ===== REACTION EXPLOSION ANIMATIONS ===== */
+@keyframes like-explode {
   0% { transform: scale(1); }
-  25% { transform: scale(1.35); }
-  50% { transform: scale(0.88); }
-  75% { transform: scale(1.12); }
+  18% { transform: scale(1.6); }
+  32% { transform: scale(0.85); }
+  48% { transform: scale(1.2); }
+  65% { transform: scale(0.95); }
+  80% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
-@keyframes heart-pulse {
-  0%, 100% { transform: scale(1); }
-  15% { transform: scale(1.3); }
-  30% { transform: scale(0.95); }
-  45% { transform: scale(1.15); }
-  60% { transform: scale(1); }
+@keyframes love-explode {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.9); }
+  30% { transform: scale(0.8); }
+  45% { transform: scale(1.35); }
+  60% { transform: scale(0.92); }
+  75% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
-@keyframes fire-flicker {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.08) rotate(-3deg); }
-  50% { transform: scale(1.12) rotate(2deg); }
-  75% { transform: scale(1.05) rotate(-1deg); }
+@keyframes fire-explode {
+  0% { transform: scale(1) rotate(0deg); }
+  20% { transform: scale(1.5) rotate(-8deg); }
+  40% { transform: scale(0.85) rotate(5deg); }
+  55% { transform: scale(1.15) rotate(-3deg); }
+  70% { transform: scale(0.95) rotate(2deg); }
+  85% { transform: scale(1.05) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); }
 }
-@keyframes clap-shake {
-  0%, 100% { transform: rotate(0deg); }
-  20% { transform: rotate(-8deg); }
-  40% { transform: rotate(8deg); }
-  60% { transform: rotate(-5deg); }
-  80% { transform: rotate(5deg); }
+@keyframes celebrate-explode {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.5) translateY(-6px); }
+  40% { transform: scale(0.85) translateY(2px); }
+  55% { transform: scale(1.2) translateY(-3px); }
+  70% { transform: scale(0.95) translateY(0); }
+  100% { transform: scale(1) translateY(0); }
 }
-@keyframes like-bob {
-  0%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-4px); }
-  60% { transform: translateY(-2px); }
+@keyframes clap-explode {
+  0% { transform: scale(1) rotate(0deg); }
+  15% { transform: scale(1.4) rotate(-10deg); }
+  30% { transform: scale(0.88) rotate(10deg); }
+  50% { transform: scale(1.1) rotate(-6deg); }
+  70% { transform: scale(0.96) rotate(4deg); }
+  85% { transform: scale(1.03) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
 }
-@keyframes celebrate-bounce {
-  0%, 100% { transform: scale(1); }
-  30% { transform: scale(1.2) translateY(-3px); }
-  50% { transform: scale(0.95); }
-  70% { transform: scale(1.05); }
+@keyframes sparkle-explode {
+  0% { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); }
+  60% { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(var(--dx,40px),var(--dy,-50px)) scale(0.3) rotate(var(--rot,180deg)); }
 }
-@keyframes sparkle-fly {
-  0% { opacity: 1; transform: translate(0,0) scale(1); }
-  100% { opacity: 0; transform: translate(var(--dx,30px),var(--dy,-40px)) scale(0); }
+@keyframes ring-expand {
+  0% { opacity: 0.5; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(2.5); }
 }
 @keyframes count-pop {
   0% { transform: scale(1); }
-  50% { transform: scale(1.3); }
+  50% { transform: scale(1.4); }
   100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-3px); }
+  30% { transform: translateX(3px); }
+  45% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+  90% { transform: translateX(1px); }
 }
 
 .tabular-nums { font-variant-numeric: tabular-nums; }
