@@ -15,7 +15,7 @@ export function Projects() {
 
   useEffect(() => {
     const loadData = async () => {
-      try { setLoading(true); setProjects(await fetchProjects()); }
+      try { if (projects.length === 0) setLoading(true); setProjects(await fetchProjects()); }
       catch (err) { setError(err instanceof Error ? err.message : 'Failed'); }
       finally { setLoading(false); }
     };

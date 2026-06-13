@@ -16,7 +16,7 @@ export function Writing() {
 
   useEffect(() => {
     const loadData = async () => {
-      try { setLoading(true); setPosts(await fetchPublishedPosts()); }
+      try { if (posts.length === 0) setLoading(true); setPosts(await fetchPublishedPosts()); }
       catch (err) { setError(err instanceof Error ? err.message : 'Failed'); }
       finally { setLoading(false); }
     };

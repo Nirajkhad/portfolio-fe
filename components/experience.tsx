@@ -15,7 +15,7 @@ export function Experience() {
 
   useEffect(() => {
     const loadData = async () => {
-      try { setLoading(true); setExperiences(await fetchExperiences()); }
+      try { if (experiences.length === 0) setLoading(true); setExperiences(await fetchExperiences()); }
       catch (err) { setError(err instanceof Error ? err.message : 'Failed to load experiences'); }
       finally { setLoading(false); }
     };

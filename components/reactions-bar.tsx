@@ -81,6 +81,10 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
     }
   }, [userReactions, slug]);
 
+  useEffect(() => {
+    setReactions(initialReactions);
+  }, [initialReactions]);
+
   const triggerSparkles = useCallback((type: string, x: number, y: number) => {
     const emoji = REACTIONS.find((r) => r.type === type)?.emoji ?? '';
     const count = 10;

@@ -15,7 +15,7 @@ export function Skills() {
 
   useEffect(() => {
     const loadData = async () => {
-      try { setLoading(true); setSkillCategories(await fetchSkillsGrouped()); }
+      try { if (skillCategories.length === 0) setLoading(true); setSkillCategories(await fetchSkillsGrouped()); }
       catch (err) { setError(err instanceof Error ? err.message : 'Failed'); }
       finally { setLoading(false); }
     };

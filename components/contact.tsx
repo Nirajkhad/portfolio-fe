@@ -18,7 +18,7 @@ export function Contact() {
 
   useEffect(() => {
     const loadData = async () => {
-      try { setState((prev) => ({ ...prev, loading: true, error: null })); setState({ data: await fetchPortfolioGeneralInfo(), loading: false, error: null }); }
+      try { setState((prev) => ({ ...prev, error: null, loading: prev.data === null })); setState({ data: await fetchPortfolioGeneralInfo(), loading: false, error: null }); }
       catch (error) { setState({ data: null, loading: false, error: error instanceof Error ? error.message : 'Failed' }); }
     };
     loadData();
