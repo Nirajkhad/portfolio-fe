@@ -61,7 +61,8 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const [rings, setRings] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
   const [rateLimited, setRateLimited] = useState<string | null>(null);
-  const loadingRef = useRef(false);
+  const [loadingTypes, setLoadingTypes] = useState<Set<string>>(new Set());
+  const loadingTypesRef = useRef<Set<string>>(new Set());
   const cooldownRef = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
@@ -115,29 +116,34 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
   }, []);
 
   const handleClick = async (type: string, e: React.MouseEvent) => {
-    if (loadingRef.current) return;
+    if (loadingTypesRef.current.has(type)) return;
 
     const now = Date.now();
     const lastClick = cooldownRef.current.get(type) || 0;
     if (now - lastClick < COOLDOWN_MS) return;
 
-    loadingRef.current = true;
     cooldownRef.current.set(type, now);
+    loadingTypesRef.current.add(type);
+    setLoadingTypes(new Set(loadingTypesRef.current));
 
-    const wasActive = userReactions.includes(type);
     const prevReactions = { ...reactions };
     const prevUser = [...userReactions];
+    const wasActive = userReactions.includes(type);
 
-    const newCount = wasActive
-      ? Math.max(0, (reactions[type] || 0) - 1)
-      : (reactions[type] || 0) + 1;
+    setReactions((prev) => ({
+      ...prev,
+      [type]: wasActive
+        ? Math.max(0, (prev[type] || 0) - 1)
+        : (prev[type] || 0) + 1,
+    }));
 
-    setReactions((prev) => ({ ...prev, [type]: newCount }));
+    setUserReactions((prev) =>
+      wasActive
+        ? prev.filter((t) => t !== type)
+        : [...prev, type],
+    );
 
-    if (wasActive) {
-      setUserReactions((prev) => prev.filter((t) => t !== type));
-    } else {
-      setUserReactions((prev) => [...prev, type]);
+    if (!wasActive) {
       setAnimatingType(type);
       triggerSparkles(type, e.clientX, e.clientY);
       setTimeout(() => setAnimatingType(null), 600);
@@ -158,7 +164,8 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
       setReactions(prevReactions);
       setUserReactions(prevUser);
     } finally {
-      loadingRef.current = false;
+      loadingTypesRef.current.delete(type);
+      setLoadingTypes(new Set(loadingTypesRef.current));
     }
   };
 
@@ -169,10 +176,13 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
         const isActive = userReactions.includes(type);
         const isAnimating = animatingType === type;
 
+        const isLoading = loadingTypes.has(type) || loadingTypesRef.current.has(type);
+
         return (
           <div key={type} className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); handleClick(type, e); }}
+              disabled={isLoading}
               className={`
                 relative flex items-center gap-1 font-mono rounded-md transition-colors duration-150 cursor-pointer select-none
                 hover:scale-110 hover:-translate-y-0.5 active:scale-90
@@ -181,6 +191,7 @@ export function ReactionsBar({ slug, initialReactions, compact = false }: Reacti
                 ${isActive ? ACTIVE_CLASSES[type] : HOVER_CLASSES[type]}
                 ${isAnimating ? ANIMATION_CLASSES[type] : ''}
                 ${rateLimited === type ? '!border-[#ef4444] !text-[#ef4444] animate-[shake_0.4s_ease]' : ''}
+                ${isLoading ? 'opacity-50 pointer-events-none' : ''}
               `}
               title={label}
             >
