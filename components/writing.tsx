@@ -5,6 +5,7 @@ import { fetchPublishedPosts, type Post } from '@/lib/api';
 import { SectionHeader } from './section-header';
 import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import { EmptySection } from './empty-section';
+import { ReactionsBar } from './reactions-bar';
 
 export function Writing() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -60,7 +61,7 @@ export function Writing() {
           >
             <div className="flex-1">
               {/* Tags */}
-              {post.tags && post.tags.length > 0 && (
+                {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-2">
                   {post.tags.map((tag) => (
                     <span key={tag} className="text-[10px] sm:text-xs text-[#4ade80] bg-[#18181b] px-2.5 py-1 rounded-md border border-[#27272a]">
@@ -77,18 +78,21 @@ export function Writing() {
               <p className="text-xs sm:text-sm text-[#9ca3af] leading-relaxed mb-3">
                 {post.excerpt}
               </p>
-              {/* Meta */}
-              <div className="font-mono text-[9px] sm:text-[10px] text-[#71717a] flex gap-3 flex-wrap">
-                {post.published_at && (
-                  <span>
-                    {new Date(post.published_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </span>
-                )}
-                <span>{post.read_time} min read</span>
+              {/* Meta + Reactions */}
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="font-mono text-[9px] sm:text-[10px] text-[#71717a] flex gap-3">
+                  {post.published_at && (
+                    <span>
+                      {new Date(post.published_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  )}
+                  <span>{post.read_time} min read</span>
+                </div>
+                <ReactionsBar slug={post.slug} initialReactions={post.reactions} compact />
               </div>
             </div>
             {/* Arrow */}

@@ -109,6 +109,7 @@ export interface Post {
   status: 'draft' | 'published';
   published_at: string | null;
   read_time: number;
+  reactions: Record<string, number>;
   created_at: string;
   updated_at: string;
 }
@@ -180,4 +181,27 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 export async function fetchPostBySlug(slug: string): Promise<Post> {
   return fetchApi<Post>(`/posts/${slug}`);
+}
+
+export async function togglePostReaction(
+  slug: string,
+  type: string
+): Promise<{ user_reactions: string[]; reactions: Record<string, number> }> {
+  const response = await fetch(`${API_BASE_URL}/posts/${slug}/like`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error('API returned success: false');
+  }
+
+  return result.data;
 }

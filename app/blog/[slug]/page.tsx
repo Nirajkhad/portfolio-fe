@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { fetchPostBySlug } from '@/lib/api';
+import { ReactionsBar } from '@/components/reactions-bar';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -151,6 +152,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <span className="text-xs">←</span>
             all posts
           </Link>
+          <ReactionsBar slug={post.slug} initialReactions={post.reactions} />
         </div>
       </main>
     </div>
