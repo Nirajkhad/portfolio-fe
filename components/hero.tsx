@@ -3,146 +3,124 @@
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
 
-interface CtaButton {
-  label: string;
-  href: string;
-  iconClass: string;
-  isExternal: boolean;
-}
-
 interface HeroState {
   data: PortfolioGeneralInfo | null;
   loading: boolean;
   error: string | null;
 }
 
+const lines = [
+  { type: 'prompt', text: 'whoami', delay: 200 },
+  { type: 'output', key: 'name', delay: 400 },
+  { type: 'prompt', text: 'cat role.txt', delay: 600 },
+  { type: 'output', key: 'title', delay: 800 },
+  { type: 'prompt', text: 'echo $LOCATION', delay: 1000 },
+  { type: 'output', key: 'location', delay: 1200 },
+];
+
 export function Hero() {
   const [state, setState] = useState<HeroState>({
-    data: null,
-    loading: true,
-    error: null,
+    data: null, loading: true, error: null,
   });
-  const [isVisible, setIsVisible] = useState(false);
+  const [visibleLines, setVisibleLines] = useState(0);
 
-  useEffect(() => {
-    // Hero section should animate immediately on mount
-    const timer = setTimeout(() => {
-      console.log('🎬 Hero animation triggered');
-      setIsVisible(true);
-    }, 150);
-    return () => clearTimeout(timer);
-  }, []);
+  const data = state.data;
+  const name = data?.full_name ?? 'Niraj Kamdar';
+  const title = data?.title ?? 'Full-Stack Developer';
+  const location = data?.location ?? 'Kathmandu, Nepal';
+  const socialLinks = data?.social_links ?? [];
+  const bio = data?.bio ?? '';
+  const showBio = bio.trim().length > 0;
+  const outputValues = { name, title, location, bio };
+
+  const allLines = showBio
+    ? [...lines, { type: 'prompt' as const, text: 'cat about.md', delay: 1400 }, { type: 'output' as const, key: 'bio', delay: 1600 }]
+    : lines;
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const data = await fetchPortfolioGeneralInfo();
-        setState({ data, loading: false, error: null });
+        setState({ data: await fetchPortfolioGeneralInfo(), loading: false, error: null });
       } catch (error) {
-        setState({
-          data: null,
-          loading: false,
-          error: error instanceof Error ? error.message : 'Failed to load data',
-        });
+        setState({ data: null, loading: false, error: error instanceof Error ? error.message : 'Failed' });
       }
     };
-
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (state.loading) return;
+    const timers = allLines.map((l, i) => setTimeout(() => setVisibleLines((v) => Math.max(v, i + 1)), l.delay));
+    return () => timers.forEach(clearTimeout);
+  }, [state.loading, allLines]);
+
   if (state.loading) {
     return (
-      <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
-        <div className="animate-pulse">
-          <div className="h-4 bg-[#18181b] rounded w-32 mb-3"></div>
-          <div className="h-14 bg-[#18181b] rounded w-48 mb-4"></div>
-          <div className="h-6 bg-[#18181b] rounded w-64 mb-4"></div>
-          <div className="h-20 bg-[#18181b] rounded w-full max-w-[500px] mb-5"></div>
+      <section id="home" className="relative min-h-screen flex flex-col justify-center px-4 sm:px-8 lg:px-16 pt-20">
+        <div className="animate-pulse max-w-[600px] w-full mx-auto">
+          <div className="h-[260px] bg-[#10101a] border border-[#1e1e2a] rounded-xl" />
         </div>
       </section>
     );
   }
-
-  if (state.error || !state.data) {
-    return (
-      <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
-        <div className="text-red-500 text-sm">
-          Failed to load portfolio data. {state.error && `Error: ${state.error}`}
-        </div>
-      </section>
-    );
-  }
-
-  const { full_name, title, bio, location, social_links } = state.data;
-
-  // Build CTA buttons from social links - use icon class from API directly
-  const ctaButtons = social_links.map((link) => ({
-    label: link.platform,
-    href: link.url,
-    iconClass: link.icon,
-    isExternal: true,
-  }));
 
   return (
-    <section id="home" className="h-screen pt-8 sm:pt-10 md:pt-[52px] px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center">
-      <div
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
-          transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          willChange: 'opacity, transform'
-        }}
-      >
-      {/* Kicker line */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="h-px w-5 sm:w-7 bg-[#4ade80] opacity-40"></div>
-        <p className="font-mono text-[10px] sm:text-[11px] text-[#4ade80] tracking-[0.08em]">
-          hello, world — I'm
-        </p>
-      </div>
+    <section id="home" className="relative min-h-screen flex flex-col justify-center px-4 sm:px-8 lg:px-16 pt-20 overflow-hidden">
+      <h1 className="sr-only">{name} — {title} from {location}</h1>
+      <div className="max-w-[640px] w-full mx-auto" style={{ animation: 'fade-in-up 0.6s ease both' }}>
+        <div className="bg-[#0d0d18] border border-[#1e1e2a] rounded-xl overflow-hidden">
+          <div className="bg-[#141420] border-b border-[#1e1e2a] px-3.5 py-[10px] flex items-center gap-2">
+            <span className="w-[10px] h-[10px] rounded-full bg-[#ff5f56]" />
+            <span className="w-[10px] h-[10px] rounded-full bg-[#ffbd2e]" />
+            <span className="w-[10px] h-[10px] rounded-full bg-[#27c93f]" />
+            <span className="font-mono text-[11px] text-[#52525b] ml-2">terminal — niraj</span>
+          </div>
 
-      {/* Name */}
-      <h1
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold text-[#fafafa] leading-none"
-        style={{ letterSpacing: '-0.04em' }}
-      >
-        {full_name}
-      </h1>
+          <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-[1.8] min-h-[220px] sm:min-h-[240px]">
+            {allLines.slice(0, visibleLines).map((line, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', opacity: 0, animation: 'fade-in 0.4s ease forwards' }}>
+                <span className="text-[#4ade80] shrink-0 select-none">$</span>
+                {line.type === 'prompt' ? (
+                  <span className="text-[#e4e4e7]">{line.text}</span>
+                ) : (
+                  <span className="text-[#4ade80]">{outputValues[line.key as keyof typeof outputValues]}</span>
+                )}
+              </div>
+            ))}
+            {visibleLines > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
+                <span className="text-[#4ade80]">$</span>
+                <span style={{ display: 'inline-block', width: '8px', height: '16px', background: '#4ade80', animation: 'cursor-blink 1s step-end infinite' }} />
+              </div>
+            )}
+          </div>
+        </div>
 
-      {/* Role */}
-      <p className="font-mono text-sm sm:text-base md:text-lg text-[#9ca3af] mt-2 mb-5">{`// ${title}`}</p>
+        {socialLinks.length > 0 && (
+          <div className="flex gap-3 mt-6 flex-wrap">
+            {socialLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => globalThis.window?.open(link.url, '_blank', 'noopener,noreferrer')}
+                className="font-mono text-[11px] px-3.5 py-2 rounded-lg transition-all duration-200 cursor-pointer bg-[#10101a] border border-[#1e1e2a] text-[#a1a1aa] hover:text-[#4ade80] hover:border-[#4ade80]/30 inline-flex items-center gap-2"
+              >
+                <i className={`${link.icon} text-[11px]`} />
+                <span>{link.platform}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
-      {/* Bio */}
-      <p className="text-xs sm:text-sm text-[#d1d5db] leading-[1.8] mb-5 max-w-full sm:max-w-[500px]">
-        {bio}
-      </p>
-
-      {/* Location */}
-      <div className="flex items-center gap-[7px] mb-6 font-mono text-[10px] sm:text-[11px] text-[#9ca3af]">
-        <span className="w-1.5 h-1.5 bg-[#4ade80] rounded-full animate-pulse opacity-60"></span>
-        <span>{location}</span>
-      </div>
-
-      {/* CTA Buttons */}
-      <div className="flex gap-2 sm:gap-3 flex-wrap">
-        {ctaButtons.map((btn) => (
-          <button
-            key={btn.label}
-            onClick={() => {
-              if (btn.isExternal) {
-                globalThis.window?.open(btn.href, '_blank', 'noopener,noreferrer');
-              } else {
-                globalThis.window.location.href = btn.href;
-              }
-            }}
-            className={`font-mono text-[10px] sm:text-[11px] px-3 sm:px-3.5 py-[6px] sm:py-[7px] rounded-md transition-all duration-200 inline-flex items-center gap-[6px] sm:gap-[7px] cursor-pointer bg-[#111827] border border-[#1f2937] text-[#9ca3af] hover:text-[#4ade80] hover:border-[#4ade80]`}
-          >
-            <i className={`${btn.iconClass} text-[11px] sm:text-[12px]`} />
-            <span>{btn.label}</span>
-          </button>
-        ))}
-      </div>
+        {visibleLines >= allLines.length && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2" style={{ animation: 'fade-in 0.6s ease 0.3s both' }}>
+            <div className="flex flex-col items-center gap-1 text-[#52525b]">
+              <svg className="w-4 h-4 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              </svg>
+              <span className="text-[10px] font-mono">scroll</span>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

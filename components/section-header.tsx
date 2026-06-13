@@ -1,15 +1,25 @@
 interface SectionHeaderProps {
   readonly title: string;
+  readonly number: string;
+  readonly accent?: 'green' | 'cyan' | 'violet' | 'amber';
 }
 
-export function SectionHeader({ title }: SectionHeaderProps) {
+const accentMap = {
+  green: '#4ade80',
+  cyan: '#22d3ee',
+  violet: '#a78bfa',
+  amber: '#f59e0b',
+};
+
+export function SectionHeader({ title, number, accent = 'green' }: SectionHeaderProps) {
+  const accentColor = accentMap[accent];
+
   return (
-    <div className="flex items-center gap-2 sm:gap-2.5 mb-6 sm:mb-7 md:mb-8">
-      <span className="font-mono text-xs sm:text-sm text-[#4ade80]">./</span>
-      <span className="text-sm sm:text-base font-semibold text-[#f9fafb] tracking-tight">
-        {title}
-      </span>
-      <div className="flex-1 h-px bg-[#27272a]"></div>
+    <div className="flex items-center gap-[6px] font-mono text-xs text-[#52525b] mb-5" role="group" aria-label={title}>
+      <span style={{ color: accentColor }}>//</span>
+      <span className="text-[#52525b]">{number}.</span>
+      <h2 className="font-medium m-0 text-xs" style={{ color: accentColor }}>{title}</h2>
+      <span className="flex-1 h-px bg-[#1e1e2a]" />
     </div>
   );
 }

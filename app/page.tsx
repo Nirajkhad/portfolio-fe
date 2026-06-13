@@ -7,36 +7,32 @@ import { Projects } from '@/components/projects';
 import { Skills } from '@/components/skills';
 import { Writing } from '@/components/writing';
 import { Contact } from '@/components/contact';
-
 import { Footer } from '@/components/footer';
 import { BackToTop } from '@/components/back-to-top';
+import { ScrollProgress } from '@/components/scroll-progress';
 
 export default function Home() {
   useEffect(() => {
     window.history.scrollRestoration = 'manual';
-    
+
     const scrollToHash = () => {
       const hash = window.location.hash;
       if (!hash) return;
-
       const element = document.querySelector(hash);
       if (element) {
-        // Use smooth scroll for better UX
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const y = element.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
       }
     };
 
-    // Wait for content to load on initial page load
     const initialTimeout = setTimeout(scrollToHash, 800);
 
-    // Handle hash changes (clicking links within the page)
     const handleHashChange = () => {
-      // Small delay to let content settle, then smooth scroll
       setTimeout(scrollToHash, 100);
     };
 
     window.addEventListener('hashchange', handleHashChange);
-    
+
     return () => {
       clearTimeout(initialTimeout);
       window.removeEventListener('hashchange', handleHashChange);
@@ -44,7 +40,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#09090b]">
+    <main className="min-h-screen">
+      <ScrollProgress />
       <Navbar />
       <div className="flex flex-col">
         <Hero />

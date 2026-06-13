@@ -1,134 +1,182 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
-import { togglePostReaction } from '@/lib/api';
+import { useState, useEffect, useCallback } from 'react';
+import { togglePostReaction, type PostReactions } from '@/lib/api';
+
+const REACTIONS = [
+  { type: 'like', emoji: '👍', label: 'Like' },
+  { type: 'love', emoji: '❤️', label: 'Love' },
+  { type: 'fire', emoji: '🔥', label: 'Fire' },
+  { type: 'celebrate', emoji: '🎉', label: 'Celebrate' },
+  { type: 'clap', emoji: '👏', label: 'Clap' },
+] as const;
+
+const ANIMATION_CLASSES: Record<string, string> = {
+  like: 'animate-[like-bob_0.6s_ease]',
+  love: 'animate-[heart-pulse_0.6s_ease]',
+  fire: 'animate-[fire-flicker_0.5s_ease]',
+  celebrate: 'animate-[celebrate-bounce_0.6s_ease]',
+  clap: 'animate-[clap-shake_0.5s_ease]',
+};
+
+const HOVER_CLASSES: Record<string, string> = {
+  like: 'hover:bg-[#4ade80]/8 hover:border-[#4ade80]/20 hover:text-[#4ade80]',
+  love: 'hover:bg-[#f43f5e]/8 hover:border-[#f43f5e]/20 hover:text-[#f43f5e]',
+  fire: 'hover:bg-[#f97316]/8 hover:border-[#f97316]/20 hover:text-[#f97316]',
+  celebrate: 'hover:bg-[#a855f7]/8 hover:border-[#a855f7]/20 hover:text-[#a855f7]',
+  clap: 'hover:bg-[#eab308]/8 hover:border-[#eab308]/20 hover:text-[#eab308]',
+};
+
+const ACTIVE_CLASSES: Record<string, string> = {
+  like: 'bg-[#4ade80]/10 border-[#4ade80]/25 text-[#4ade80] shadow-[0_0_12px_rgba(74,222,128,0.06)]',
+  love: 'bg-[#f43f5e]/10 border-[#f43f5e]/25 text-[#f43f5e] shadow-[0_0_12px_rgba(244,63,94,0.06)]',
+  fire: 'bg-[#f97316]/10 border-[#f97316]/25 text-[#f97316] shadow-[0_0_12px_rgba(249,115,22,0.06)]',
+  celebrate: 'bg-[#a855f7]/10 border-[#a855f7]/25 text-[#a855f7] shadow-[0_0_12px_rgba(168,85,247,0.06)]',
+  clap: 'bg-[#eab308]/10 border-[#eab308]/25 text-[#eab308] shadow-[0_0_12px_rgba(234,179,8,0.06)]',
+};
 
 interface ReactionsBarProps {
   slug: string;
-  initialReactions: Record<string, number>;
+  initialReactions: PostReactions;
   compact?: boolean;
 }
 
-const REACTIONS = [
-  { type: 'like', emoji: '👍', label: 'Like', activeColor: 'text-blue-400' },
-  { type: 'love', emoji: '❤️', label: 'Love', activeColor: 'text-red-400' },
-  { type: 'fire', emoji: '🔥', label: 'Fire', activeColor: 'text-orange-400' },
-  { type: 'celebrate', emoji: '🎉', label: 'Celebrate', activeColor: 'text-yellow-400' },
-  { type: 'clap', emoji: '👏', label: 'Clap', activeColor: 'text-purple-400' },
-] as const;
+interface Sparkle {
+  id: number;
+  x: number;
+  y: number;
+  angle: number;
+  emoji: string;
+}
 
 export function ReactionsBar({ slug, initialReactions, compact = false }: ReactionsBarProps) {
-  const storageKey = `portfolio_react_${slug}`;
-
-  const [reactions, setReactions] = useState(initialReactions);
+  const [reactions, setReactions] = useState<PostReactions>(initialReactions);
   const [userReactions, setUserReactions] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [loading, setLoading] = useState<string | null>(null);
-  const [animating, setAnimating] = useState<string | null>(null);
+  const [animatingType, setAnimatingType] = useState<string | null>(null);
+  const [popCount, setPopCount] = useState<string | null>(null);
+  const [sparkles, setSparkles] = useState<Sparkle[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
+    const stored = localStorage.getItem(`reactions_${slug}`);
+    if (stored) {
+      try {
         setUserReactions(JSON.parse(stored));
-      }
-    } catch {
-      // localStorage unavailable
+      } catch { /* ignore */ }
     }
-    setLoaded(true);
-  }, [storageKey]);
+  }, [slug]);
 
   useEffect(() => {
-    if (!loaded) return;
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(userReactions));
-    } catch {
-      // localStorage unavailable
+    if (userReactions.length > 0) {
+      localStorage.setItem(`reactions_${slug}`, JSON.stringify(userReactions));
+    } else {
+      localStorage.removeItem(`reactions_${slug}`);
     }
-  }, [userReactions, storageKey, loaded]);
+  }, [userReactions, slug]);
 
-  const handleReaction = useCallback(async (type: string) => {
+  const triggerSparkles = useCallback((type: string, x: number, y: number) => {
+    const newSparkles = Array.from({ length: 5 }, (_, i) => ({
+      id: Date.now() + i,
+      x,
+      y,
+      angle: (Math.PI * 2 * i) / 5 - Math.PI + (Math.random() - 0.5),
+      emoji: REACTIONS.find((r) => r.type === type)?.emoji ?? '',
+    }));
+    setSparkles((prev) => [...prev, ...newSparkles]);
+    setTimeout(() => {
+      setSparkles((prev) => prev.filter((s) => !newSparkles.find((ns) => ns.id === s.id)));
+    }, 700);
+  }, []);
+
+  const handleClick = async (type: string, e: React.MouseEvent) => {
     if (loading) return;
-    setLoading(type);
-    setAnimating(type);
-    setTimeout(() => setAnimating(null), 400);
+    setLoading(true);
 
     const wasActive = userReactions.includes(type);
+    const prevReactions = { ...reactions };
+    const prevUser = [...userReactions];
 
-    setUserReactions(prev =>
-      wasActive ? prev.filter(t => t !== type) : [...prev, type]
-    );
-    setReactions(prev => ({
-      ...prev,
-      [type]: Math.max(0, prev[type] + (wasActive ? -1 : 1)),
-    }));
+    // Optimistic update
+    const newCount = wasActive
+      ? Math.max(0, (reactions[type] || 0) - 1)
+      : (reactions[type] || 0) + 1;
+
+    setReactions((prev) => ({ ...prev, [type]: newCount }));
+
+    if (wasActive) {
+      setUserReactions((prev) => prev.filter((t) => t !== type));
+    } else {
+      setUserReactions((prev) => [...prev, type]);
+      setAnimatingType(type);
+      triggerSparkles(type, e.clientX, e.clientY);
+      setTimeout(() => setAnimatingType(null), 600);
+    }
+
+    setPopCount(type);
+    setTimeout(() => setPopCount(null), 300);
 
     try {
       const result = await togglePostReaction(slug, type);
-      setUserReactions(result.user_reactions);
       setReactions(result.reactions);
+      setUserReactions(result.user_reactions);
     } catch {
-      setUserReactions(prev =>
-        wasActive ? [...prev, type] : prev.filter(t => t !== type)
-      );
-      setReactions(prev => ({
-        ...prev,
-        [type]: Math.max(0, prev[type] + (wasActive ? 1 : -1)),
-      }));
+      setReactions(prevReactions);
+      setUserReactions(prevUser);
     } finally {
-      setLoading(null);
+      setLoading(false);
     }
-  }, [slug, loading, userReactions]);
-
-  const total = Object.values(reactions).reduce((a, b) => a + b, 0);
+  };
 
   return (
-    <div className={`flex ${compact ? 'gap-2' : 'gap-1 sm:gap-2'}`}>
-      {REACTIONS.map(({ type, emoji, label, activeColor }) => {
+    <div className={`flex ${compact ? 'gap-1' : 'gap-2'} relative`}>
+      {REACTIONS.map(({ type, emoji, label }) => {
+        const count = reactions[type] || 0;
         const isActive = userReactions.includes(type);
-        const isAnimating = animating === type;
+        const isAnimating = animatingType === type;
 
         return (
-          <button
-            key={type}
-            onClick={(e) => { e.stopPropagation(); handleReaction(type); }}
-            disabled={loading === type}
-            title={label}
-            className={`
-              group flex items-center gap-1 rounded-lg transition-all duration-200 select-none
-              ${compact
-                ? 'px-1.5 py-0.5 text-xs'
-                : 'px-2 sm:px-3 py-1.5 text-sm sm:text-base'
-              }
-              ${isActive
-                ? `${activeColor} bg-[#27272a] scale-110`
-                : 'text-[#9ca3af] hover:bg-[#27272a]/60 hover:scale-110'
-              }
-              ${isAnimating ? 'animate-[reaction-bounce_400ms_ease]' : ''}
-              cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
-            `}
-            style={{
-              willChange: 'transform',
-            }}
-          >
-            <span
+          <div key={type} className="relative">
+            <button
+              onClick={(e) => { e.stopPropagation(); handleClick(type, e); }}
+              disabled={loading}
               className={`
-                transition-transform duration-200
-                group-hover:scale-125
-                ${isAnimating ? 'scale-125' : ''}
+                relative flex items-center gap-1 font-mono rounded-md transition-all duration-200 cursor-pointer select-none
+                ${compact ? 'text-[10px] px-1.5 py-1' : 'text-[11px] px-2.5 py-1.5'}
+                border border-[#1e1e2a] bg-transparent text-[#52525b]
+                ${isActive ? ACTIVE_CLASSES[type] : HOVER_CLASSES[type]}
+                ${isAnimating ? ANIMATION_CLASSES[type] : ''}
+                ${loading ? 'opacity-60 pointer-events-none' : ''}
               `}
+              title={label}
             >
-              {emoji}
-            </span>
-            {!compact && reactions[type] > 0 && (
-              <span className="text-xs font-mono tabular-nums">{reactions[type]}</span>
-            )}
-          </button>
+              <span className={isAnimating ? 'inline-block' : ''}>{emoji}</span>
+              {count > 0 && (
+                <span
+                  className={`tabular-nums ${popCount === type ? 'animate-[count-pop_0.3s_ease]' : ''}`}
+                >
+                  {count}
+                </span>
+              )}
+            </button>
+          </div>
         );
       })}
-      {compact && total > 0 && (
-        <span className="text-xs text-[#71717a] font-mono self-center ml-1">{total}</span>
-      )}
+
+      {sparkles.map((s) => (
+        <span
+          key={s.id}
+          className="fixed pointer-events-none z-50 text-xs"
+          style={{
+            left: s.x,
+            top: s.y,
+            animation: 'sparkle-fly 0.7s ease-out forwards',
+            ['--dx' as string]: `${Math.cos(s.angle) * 40}px`,
+            ['--dy' as string]: `${Math.sin(s.angle) * 40 - 20}px`,
+          }}
+        >
+          {s.emoji}
+        </span>
+      ))}
     </div>
   );
 }

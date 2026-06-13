@@ -3,92 +3,74 @@
 import { useEffect, useState } from 'react';
 import { fetchSkillsGrouped, type SkillCategory } from '@/lib/api';
 import { SectionHeader } from './section-header';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import { EmptySection } from './empty-section';
-
-const colorMap: Record<string, string> = {
-  'Languages': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-  'Frameworks': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-  'Databases': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-  'Tools': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-  'Cloud': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-  'DevOps': 'text-[#9ca3af] bg-[#18181b] border-[#27272a]',
-};
-
-const defaultColor = 'text-[#9ca3af] bg-[#18181b] border-[#27272a]';
 
 export function Skills() {
   const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { ref, isVisible } = useScrollAnimation();
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchSkillsGrouped();
-        setSkillCategories(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load skills');
-      } finally {
-        setLoading(false);
-      }
+      try { setLoading(true); setSkillCategories(await fetchSkillsGrouped()); }
+      catch (err) { setError(err instanceof Error ? err.message : 'Failed'); }
+      finally { setLoading(false); }
     };
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+    );
+    const el = document.getElementById('skills');
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   let content;
   if (loading) {
     content = (
       <div className="animate-pulse flex flex-col gap-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 bg-[#18181b] border border-[#27272a] rounded-xl" />
-        ))}
+        {[1, 2, 3].map((i) => <div key={i} className="h-24 bg-[#10101a] border border-[#1e1e2a] rounded-lg" />)}
       </div>
     );
   } else if (error) {
-    content = <div className="text-red-500 text-sm">Error: {error}</div>;
+    content = <div className="text-[#ef4444] text-sm font-mono">{error}</div>;
   } else if (!skillCategories || skillCategories.length === 0) {
     content = <EmptySection message="No skills to show yet." />;
   } else {
     content = (
-      <div
-        className="flex flex-col gap-4"
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
-          transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          willChange: 'opacity, transform'
-        }}
-      >
-        {skillCategories.map((category) => (
-          <div
-            key={category.category}
-            className="border border-[#27272a]/50 rounded-xl p-4 sm:p-5 hover:border-[#4ade80]/40 transition-colors duration-200"
-          >
-            <div className="font-mono text-xs sm:text-sm font-medium text-[#f9fafb] mb-3">
-              {category.category}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {skillCategories.map((category, i) => {
+          const delay = i * 80;
+          return (
+            <div
+              key={category.category}
+              className="bg-[#10101a] border border-[#1e1e2a] rounded-lg p-4 sm:p-5 hover:bg-[#141420] hover:border-[#2a2a3a] transition-all duration-200"
+              style={{ opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(16px)', transition: `opacity 0.4s ease ${delay}ms, transform 0.4s ease ${delay}ms` }}
+            >
+              <div className="font-mono text-xs sm:text-sm font-medium text-[#a78bfa] mb-3 flex items-center gap-2">
+                <span className="text-[#52525b]">#</span>
+                {category.category}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {category.skills.map((skill) => (
+                  <span key={skill.id} className="font-mono text-[11px] px-2.5 py-[3px] rounded border border-[#1e1e2a] bg-[#0a0a0f] text-[#a1a1aa] hover:border-[#a78bfa]/20 hover:text-[#a78bfa] transition-all duration-200 inline-flex items-center gap-1 before:w-1 before:h-1 before:rounded-full before:bg-[#52525b] hover:before:bg-[#a78bfa]">{skill.name}</span>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {category.skills.map((skill) => (
-                <span
-                  key={skill.id}
-                  className={`text-[10px] sm:text-xs font-medium px-2.5 py-1 rounded-md border ${colorMap[category.category] || defaultColor}`}
-                >
-                  {skill.name}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
 
   return (
-    <section id="skills" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
-      <SectionHeader title="skills" />
+    <section id="skills" className="relative min-h-screen bg-[#0a0a0f] border-t border-[#1e1e2a] border-b border-[#1e1e2a] px-4 sm:px-8 lg:px-16 flex flex-col justify-center py-20 sm:py-24">
+      <SectionHeader title="skills" number="03" accent="violet" />
       {content}
     </section>
   );

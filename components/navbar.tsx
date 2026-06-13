@@ -1,46 +1,74 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { navLinks } from '@/lib/portfolio-data';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
-            console.log(`🔍 Active section: ${entry.target.id}`);
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: [0, 0.2, 0.5], rootMargin: '-100px 0px -50% 0px' }
-    );
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
+  const updateActiveSection = useCallback(() => {
     const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => observer.observe(section));
+    let current = 'home';
 
-    return () => observer.disconnect();
+    sections.forEach((section) => {
+      const el = section as HTMLElement;
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= 150) {
+        current = el.id;
+      }
+    });
+
+    setActiveSection(current);
+  }, []);
+
+  useEffect(() => {
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    return () => window.removeEventListener('scroll', updateActiveSection);
+  }, [updateActiveSection]);
+
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const sectionId = href.replace('#', '');
+    if (sectionId === 'home') return;
+    e.preventDefault();
+    const el = document.getElementById(sectionId);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      history.replaceState(null, '', href);
+    }
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#111113]/85 backdrop-blur-md border-b border-[#2a2a2e] px-4 sm:px-6 md:px-8 lg:px-10 py-3.5 flex justify-between items-center">
-      <a href="/" className="transition-transform hover:scale-105">
-        <Image 
-          src="/logo-navbar.svg" 
-          alt="NK Logo" 
-          width={48} 
-          height={32}
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-[#0a0a0f]/90 backdrop-blur-md border-b border-[#1e1e2a]'
+          : 'bg-transparent border-b border-transparent'
+      } px-4 sm:px-8 lg:px-16 py-4 flex justify-between items-center`}
+    >
+      <a href="/" className="transition-transform hover:scale-105 active:scale-95">
+        <Image
+          src="/logo-navbar.svg"
+          alt="NK Logo"
+          width={42}
+          height={28}
           priority
+          style={{ width: 'auto', height: 'auto' }}
         />
       </a>
-      
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex gap-[22px]">
+
+      <div className="hidden md:flex items-center gap-0.5">
         {navLinks.map((link) => {
           const sectionId = link.href.replace('#', '');
           const isActive = activeSection === sectionId;
@@ -48,10 +76,11 @@ export function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className={`text-sm transition-colors duration-200 font-medium ${
-                isActive 
-                  ? 'text-[#4ade80]' 
-                  : 'text-[#d1d5db] hover:text-[#4ade80]'
+              onClick={(e) => handleNavClick(e, link.href)}
+              className={`relative font-mono text-xs tracking-wide px-3 py-1.5 rounded-md transition-all duration-200 ${
+                isActive
+                  ? 'text-[#4ade80] bg-[#4ade80]/[0.06]'
+                  : 'text-[#71717a] hover:text-[#e4e4e7] hover:bg-white/[0.03]'
               }`}
             >
               {link.label}
@@ -60,34 +89,32 @@ export function Navbar() {
         })}
       </div>
 
-      {/* Mobile Menu Button */}
       <button
-        className="md:hidden flex flex-col gap-1 w-6 h-5 justify-center items-center"
+        className="md:hidden flex flex-col gap-1 w-6 h-5 justify-center items-center relative"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
         aria-expanded={mobileMenuOpen}
       >
         <span
-          className={`w-5 h-[2px] bg-[#4ade80] transition-all duration-300 ${
-            mobileMenuOpen ? 'rotate-45 translate-y-[6px]' : ''
+          className={`w-5 h-[2px] bg-[#4ade80] rounded-full transition-all duration-300 ${
+            mobileMenuOpen ? 'rotate-45 translate-y-[3.5px]' : ''
           }`}
         />
         <span
-          className={`w-5 h-[2px] bg-[#4ade80] transition-all duration-300 ${
-            mobileMenuOpen ? 'opacity-0' : ''
+          className={`w-5 h-[2px] bg-[#4ade80] rounded-full transition-all duration-300 ${
+            mobileMenuOpen ? 'opacity-0 scale-x-0' : ''
           }`}
         />
         <span
-          className={`w-5 h-[2px] bg-[#4ade80] transition-all duration-300 ${
-            mobileMenuOpen ? '-rotate-45 -translate-y-[6px]' : ''
+          className={`w-5 h-[2px] bg-[#4ade80] rounded-full transition-all duration-300 ${
+            mobileMenuOpen ? '-rotate-45 -translate-y-[3.5px]' : ''
           }`}
         />
       </button>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-[#111113]/95 backdrop-blur-md border-b border-[#2a2a2e] md:hidden">
-          <div className="flex flex-col py-4 px-4 gap-4">
+        <div className="absolute top-full left-0 right-0 bg-[#0a0a0f]/95 backdrop-blur-md border-b border-[#1e1e2a] md:hidden animate-fade-in">
+          <div className="flex flex-col py-2 px-4 gap-0.5">
             {navLinks.map((link) => {
               const sectionId = link.href.replace('#', '');
               const isActive = activeSection === sectionId;
@@ -95,11 +122,14 @@ export function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm transition-colors duration-200 font-medium ${
-                    isActive 
-                      ? 'text-[#4ade80]' 
-                      : 'text-[#d1d5db] hover:text-[#4ade80]'
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    handleNavClick(e, link.href);
+                  }}
+                  className={`font-mono text-xs px-3 py-2.5 rounded-md transition-all duration-200 ${
+                    isActive
+                      ? 'text-[#4ade80] bg-[#4ade80]/[0.06]'
+                      : 'text-[#71717a] hover:text-[#e4e4e7]'
                   }`}
                 >
                   {link.label}

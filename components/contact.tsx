@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { fetchPortfolioGeneralInfo, type PortfolioGeneralInfo } from '@/lib/api';
 import { SectionHeader } from './section-header';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 interface ContactState {
   data: PortfolioGeneralInfo | null;
@@ -12,92 +11,75 @@ interface ContactState {
 }
 
 export function Contact() {
-  const [state, setState] = useState<ContactState>({
-    data: null,
-    loading: true,
-    error: null,
-  });
-  const { ref, isVisible } = useScrollAnimation();
+  const [state, setState] = useState<ContactState>({ data: null, loading: true, error: null });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const data = await fetchPortfolioGeneralInfo();
-        setState({ data, loading: false, error: null });
-      } catch (error) {
-        setState({
-          data: null,
-          loading: false,
-          error: error instanceof Error ? error.message : 'Failed to load data',
-        });
-      }
+      try { setState((prev) => ({ ...prev, loading: true, error: null })); setState({ data: await fetchPortfolioGeneralInfo(), loading: false, error: null }); }
+      catch (error) { setState({ data: null, loading: false, error: error instanceof Error ? error.message : 'Failed' }); }
     };
-
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+    );
+    const el = document.getElementById('contact');
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const { email, social_links } = state.data || { email: '', social_links: [] };
 
   return (
-    <section id="contact" className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 flex flex-col justify-center py-16" ref={ref}>
-      <SectionHeader title="contact" />
+    <section id="contact" className="relative min-h-screen bg-[#0a0a0f] border-t border-[#1e1e2a] px-4 sm:px-8 lg:px-16 flex flex-col justify-center py-20 sm:py-24">
+      <SectionHeader title="contact" number="05" accent="green" />
 
       {state.loading ? (
-        <div className="animate-pulse border border-[#27272a]/50 rounded-xl p-8 sm:p-10 md:p-12">
-          <div className="h-8 bg-[#18181b] rounded w-48 mb-4 mx-auto"></div>
-          <div className="h-16 bg-[#18181b] rounded w-64 mb-4 mx-auto"></div>
+        <div className="animate-pulse bg-[#10101a] border border-[#1e1e2a] rounded-lg p-10 sm:p-12 text-center">
+          <div className="h-6 bg-[#1e1e2a] rounded w-48 mb-3 mx-auto" />
+          <div className="h-14 bg-[#1e1e2a] rounded w-64 mx-auto" />
         </div>
       ) : state.error || !state.data ? (
-        <div className="text-red-500 text-sm text-center">
-          Failed to load contact data. {state.error && `Error: ${state.error}`}
-        </div>
+        <div className="text-[#ef4444] text-sm font-mono text-center">{state.error}</div>
       ) : (
-        <div 
-          className="border border-[#27272a]/50 rounded-xl p-8 sm:p-10 md:p-12 text-center flex flex-col items-center gap-5"
-          style={{
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(50px) scale(0.96)',
-            transition: 'opacity 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            willChange: 'opacity, transform'
-          }}
+        <div
+          className="bg-[#10101a] border border-[#1e1e2a] rounded-lg p-8 sm:p-10 text-center flex flex-col items-center gap-5 relative overflow-hidden"
+          style={{ opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(20px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}
         >
-        <h2
-          className="text-2xl sm:text-3xl font-bold text-[#f9fafb]"
-          style={{ letterSpacing: '-0.03em' }}
-        >
-          Let's work together
-        </h2>
+          <div className="font-mono text-xs text-[#52525b]">$ echo &quot;let&apos;s work together&quot;</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#e4e4e7]">Let&apos;s work together</h2>
+          <p className="text-sm text-[#a1a1aa] leading-relaxed max-w-[420px]">Got a project in mind? Reach out and let&apos;s create something amazing together.</p>
 
-        <p className="text-sm sm:text-base text-[#d1d5db] leading-relaxed max-w-full sm:max-w-[450px] px-2 sm:px-0">
-          Got a project in mind? Reach out and let's create something amazing together.
-        </p>
-
-        {email && (
-          <button
-            onClick={() => (globalThis.window.location.href = `mailto:${email}`)}
-            className="flex items-center gap-2.5 bg-[#4ade80] text-[#09090b] text-sm sm:text-base font-bold px-6 sm:px-7 py-3 rounded-lg hover:bg-[#22c55e] transition-colors cursor-pointer"
-          >
-            <span>✉</span>
-            <span>Send me an email</span>
-          </button>
-        )}
-
-        {social_links.length > 0 && (
-          <div className="flex gap-5 sm:gap-6 flex-wrap justify-center">
-            {social_links.map((social) => (
+          <div className="flex flex-col items-center gap-4 mt-2">
+            {email && (
               <button
-                key={social.id}
-                onClick={() =>
-                  globalThis.window?.open(social.url, '_blank', 'noopener,noreferrer')
-                }
-                className="text-sm sm:text-base text-[#9ca3af] hover:text-[#4ade80] transition-colors cursor-pointer font-medium"
+                onClick={() => (globalThis.window.location.href = `mailto:${email}`)}
+                className="inline-flex items-center gap-2.5 bg-[#4ade80] text-[#0a0a0f] text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-[#22c55e] transition-all duration-200 cursor-pointer font-mono"
               >
-                {social.platform} →
+                <span>$ mail {email.split('@')[0]}</span>
               </button>
-            ))}
+            )}
+
+            {social_links.length > 0 && (
+              <div className="flex gap-4 flex-wrap justify-center">
+                {social_links.map((social) => (
+                  <button
+                    key={social.id}
+                    onClick={() => globalThis.window?.open(social.url, '_blank', 'noopener,noreferrer')}
+                    className="group font-mono text-xs text-[#52525b] hover:text-[#4ade80] transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <span className="text-[10px]">$</span>
+                    {social.platform}
+                    <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">&#8599;</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
         </div>
       )}
     </section>
