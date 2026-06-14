@@ -14,7 +14,7 @@ export function Footer() {
             height={18}
             style={{ width: 'auto', height: 'auto' }}
           />
-          <span>&copy; {year} Niraj Kamdar</span>
+          <span>&copy; {year} Niraj Khadka</span>
         </div>
         <div className="flex items-center gap-3">
           <span>Built with Laravel &amp; Next.js</span>
